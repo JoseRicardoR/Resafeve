@@ -1,0 +1,7 @@
+# created by virtualenv automatically
+.vscode
+BaseDatos/__pycache__/
+BaseDatos/bin/
+BaseDatos/Docente/
+BaseDatos/include/
+BaseDatos/lib/
