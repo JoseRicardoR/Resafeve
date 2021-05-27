@@ -6,7 +6,7 @@ import json
 import pymysql
 
 pymysql.install_as_MySQLdb()
-import MySQLdb 
+
 
 # Se crea la aplicacion
 
@@ -17,7 +17,14 @@ app.secret_key = 'dasfkn:LVnaWOGVN;Lk DLILHS [Q'
 
 # Establece la cadena de conexion a la base de datos
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:ELFMar#20@localhost/Embebidos3'
+# De forma local descomentar:
+#app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:root@localhost:3307/Embebidos'
+
+#En el docker descomentar:
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:root@db/Embebidos'
+
+# El db es el alias de la ip de la base de datos que se crea por defecto en el docker-composite
+# Gracias a Dios se pudo llegar a ese razonamiento
 
 # realizamos la conexion
 db = SQLAlchemy(app)

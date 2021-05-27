@@ -1,0 +1,33 @@
+# Se crea por defecto un alias de cada docker con el nombre del servicio
+# Para ejecutarla: sudo docker-compose up -d
+
+version: '3.1'
+
+services:
+  db:
+    image: mariadb:10.6.1-focal
+    container_name: dbtest
+    volumes: 
+      - ./mysql-data:/var/lib/mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+        
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:5.0.0
+    container_name: dbtestphpphpmyadmin
+    #image: phpmyadmin:5.1.0-apache
+    restart: always
+    ports:
+      - 8080:80
+    environment:
+      - PMA_ARBITRARY=1
+  
+  app:
+    image: testdb:2.0
+    container_name: testdbAPP
+    restart: always
+
+      
+  
+        
