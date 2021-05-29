@@ -1,33 +1,36 @@
 # Se crea por defecto un alias de cada docker con el nombre del servicio
 # Para ejecutarla: sudo docker-compose up -d
+# Mirar donde se está ejecutando sudo docker logs 'test_app'
+# Colocar en el sevidor de phpmyadmin 'ser_mariadb'
 
 version: '3.1'
 
 services:
-  db:
+  ser_mariadb:
     image: mariadb:10.6.1-focal
-    container_name: dbtest
+    container_name: test_mariadb
     volumes: 
-      - ./mysql-data:/var/lib/mysql
+      - /home/esteban2/docker/learning/phpmyadmin/mysql-data:/var/lib/mysql
     restart: always
+    ports: 
+      - 3307:3306
     environment:
       MYSQL_ROOT_PASSWORD: root
-        
-  phpmyadmin:
+      
+  ser_phpmyadmin:
     image: phpmyadmin/phpmyadmin:5.0.0
-    container_name: dbtestphpphpmyadmin
+    container_name: test_phpmyadmin
     #image: phpmyadmin:5.1.0-apache
     restart: always
     ports:
       - 8080:80
     environment:
       - PMA_ARBITRARY=1
-  
-  app:
-    image: testdb:2.0
-    container_name: testdbAPP
+
+  ser_app:
+    image: myapp:1.0.0
+    container_name: test_app
     restart: always
 
       
-  
         

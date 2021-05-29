@@ -11,20 +11,24 @@ pymysql.install_as_MySQLdb()
 # Se crea la aplicacion
 
 app = Flask(__name__)
-
 # Permitir encriptamiento desde la app, se configura una clave principal
 app.secret_key = 'dasfkn:LVnaWOGVN;Lk DLILHS [Q'
 
 # Establece la cadena de conexion a la base de datos
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+#app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 # De forma local descomentar:
 #app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:root@localhost:3307/Embebidos'
 
-#En el docker descomentar:
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:root@db/Embebidos'
 
-# El db es el alias de la ip de la base de datos que se crea por defecto en el docker-composite
+#En el docker descomentar:
+
+# El 'ser_mariadb' es el alias de la ip de la base de datos que se crea por defecto en el docker-composite
 # Gracias a Dios se pudo llegar a ese razonamiento
+# Estructura: 'mysql://usuario:contraseña@ip_docker_base_datos/NombreDeBaseDeDatos'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:root@ser_mariadb/Embebidos'
+
+#De manera local:
+#app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:ELFMar#20@localhost/Embebidos3'
 
 # realizamos la conexion
 db = SQLAlchemy(app)

@@ -2,6 +2,9 @@
 .vscode
 BaseDatos/__pycache__/
 BaseDatos/bin/
-BaseDatos/Docente/
+Docente/
 BaseDatos/include/
 BaseDatos/lib/
+BaseDatos/referencias*
+areaprueba
+GuardarDatos
