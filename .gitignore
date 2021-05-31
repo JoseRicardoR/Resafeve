@@ -5,6 +5,7 @@ BaseDatos/bin/
 Docente/
 BaseDatos/include/
 BaseDatos/lib/
-BaseDatos/referencias*
+#BaseDatos/referencias*
 areaprueba
-GuardarDatos
+#GuardarDatos
+Broker_Mqtt
