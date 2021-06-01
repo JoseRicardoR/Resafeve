@@ -1,3 +1,5 @@
+## Todo Este proyecto fue adaptado de:
+# http://josejuansanchez.org/iot-dashboard/
 version: '3.1'
 
 services:
@@ -17,6 +19,8 @@ services:
         depends_on: 
             - influxdb
     
+
+    
     influxdb:
         image: influxdb:1.8
         ports: 
@@ -28,6 +32,20 @@ services:
             - INFLUXDB_ADMIN_USER=root
             - INFLUXDB_ADMIN_PASSWORD=root
             - INFLUXDB_HTTP_AUTH_ENABLED=true
+            
+    grafana: 
+        image: grafana/grafana:7.5.7 
+        ports:
+            - 3000:3000 
+        volumes:
+            - grafana-storage3:/var/lib/grafana  
+        depends_on: 
+            - influxdb
+volumes:
+    grafana-storage3:
+        external: false
+            
+
 # En un archivo config/mosquitto.conf agregar:
 
 #listener 1883 0.0.0.0
