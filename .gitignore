@@ -8,4 +8,9 @@ BaseDatos/lib/
 #BaseDatos/referencias*
 areaprueba
 #GuardarDatos
-Broker_Mqtt
+IBMDeveloper*
+BrokerMqttPython/bin
+BrokerMqttPython/lib
+BrokerMqttPython/samples/audio*
+BrokerMqttPython/resultados*
+

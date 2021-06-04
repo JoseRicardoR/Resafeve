@@ -5,6 +5,7 @@ version: '3.1'
 services:
     mosquitto:
         image: eclipse-mosquitto:2.0.10
+        restart: always
         ports: 
             - 1885:1883  
         volumes:
@@ -14,6 +15,7 @@ services:
     
     telegraf: 
         image: telegraf:1.18.3
+        restart: always
         volumes:
             - ./telegraf/telegraf.conf:/etc/telegraf/telegraf.conf 
         depends_on: 
@@ -23,6 +25,7 @@ services:
     
     influxdb:
         image: influxdb:1.8
+        restart: always
         ports: 
             - 8086:8086
         volumes: 
@@ -35,6 +38,7 @@ services:
             
     grafana: 
         image: grafana/grafana:7.5.7 
+        restart: always
         ports:
             - 3000:3000 
         volumes:
