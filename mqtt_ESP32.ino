@@ -1,4 +1,4 @@
-#include <Arduino.h>
+//#include <Arduino.h>
 #include <WiFi.h>
 #include <PubSubClient.h>
 
@@ -30,8 +30,8 @@ char msg[25];
 long count=0;
 
 const int led1 = 2;
-const int portPin = 34;
-int portValue = 0;
+const int portPin = 13;
+int portValue = 12;
 
 //************************
 //** F U N C I O N E S ***
@@ -42,6 +42,7 @@ void setup_wifi();
 
 void setup() {
   pinMode(led1, OUTPUT);
+  pinMode(portPin, INPUT);
   Serial.begin(115200);
   setup_wifi();
   client.setServer(mqtt_server, mqtt_port);
@@ -55,21 +56,23 @@ void loop() {
   }
   /*---------------mensaje enviado-------------*/
   
-  if (client.connected()){            
+  else {            
     /*String str = "La cuenta es -> " + String(count);
     str.toCharArray(msg,25);
     client.publish(root_topic_publish,msg);
     count++;
     delay(3000);
     */
+  
     portValue = analogRead(portPin);
-    String str = "La medida es -> " + String(portValue);
+    Serial.println(portValue);
+/*    String str = "La medida es -> " + String(portValue);
     str.toCharArray(msg,25);
     client.publish(root_topic_publish,msg);
-    delay(3000);
+    delay(3000); */
   }
     
-  client.loop();
+  client.loop(); 
 }
 
 
