@@ -7,10 +7,12 @@ BaseDatos/include/
 BaseDatos/lib/
 #BaseDatos/referencias*
 areaprueba
-#GuardarDatos
+GuardarDatos/influxdb_data
+GuardarDatos/docs
 IBMDeveloper*
 BrokerMqttPython/bin
 BrokerMqttPython/lib
 BrokerMqttPython/samples/audio*
 BrokerMqttPython/resultados*
+chainsaw_samples
 

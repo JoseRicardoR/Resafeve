@@ -59,7 +59,7 @@ if __name__=="__main__":
     #ip del broker mqtt
     broker_address="localhost"
     #Puerto Expuesto del broker
-    port=1883
+    port=1885
     #Topico al que se desea publicar
     topico="Esteban/"
     #Periodo en el que se aniliza el .wav
@@ -74,18 +74,18 @@ if __name__=="__main__":
     mensaje=''
 
     
-    #m=0
-    #audios=3
-    #while m<audios:
+    m=0
+    audios=3
+    while m<audios:
     # Ciclo infinito de análisis
-    while True:
+    #while True:
         #Dirección relativa de la muestra .wav
-        #direccionSamples=f'samples/audio{m+1}.wav'
+        direccionSamples=f'samples/audio{m+1}.wav'
         tool.procesar(direccionSamples,puerto,archivoResultados)
         
         mensaje=tool.leer(archivoResultados)
         tool.publish(broker_address,port,topico,mensaje)
-        #m+=1  
+        m+=1  
         time.sleep(tiempoRepeticion)
 
 

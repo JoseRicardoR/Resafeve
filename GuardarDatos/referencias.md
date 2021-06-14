@@ -12,3 +12,8 @@ select * from mqtt_consumer
 Para solucionar el error de los datos persistentes: https://stackoverflow.com/questions/37705017/create-named-docker-volume-with-docker-compose
 
 Aprender a manejar Grafana:https://www.youtube.com/watch?v=GLE71pIHUU8
+
+
+Poner variables de entorno a los servicios: https://github.com/docker/compose/issues/3079
+
+Variables de entorno en Docker Compose
