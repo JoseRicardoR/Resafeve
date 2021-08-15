@@ -9,3 +9,8 @@ Para cadenas f:https://python-para-impacientes.blogspot.com/2017/02/las-cadenas-
 
 while True: https://es.stackoverflow.com/questions/142679/c%C3%B3mo-funciona-un-bucle-while-true
 
+Para entender la estructura de dockerfile
+https://docs.docker.com/engine/reference/builder/
+
+Renombrar archivos en python
+https://decodigo.com/python-renombrar-un-archivo

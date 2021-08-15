@@ -477,3 +477,6 @@
 1623630414: mosquitto version 2.0.10 running
 1623630421: New connection from 172.30.0.4:38492 on port 1883.
 1623630421: New client connected from 172.30.0.4:38492 as Telegraf-Consumer-7GNZu (p2, c1, k60).
+1623631117: Client Telegraf-Consumer-7GNZu disconnected.
+1623631117: mosquitto version 2.0.10 terminating
+1623631117: Saving in-memory database to /mosquitto/data//mosquitto.db.

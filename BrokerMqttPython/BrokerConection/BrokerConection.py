@@ -23,7 +23,7 @@ class Tool():
         return
     
 
-    def procesar(self,direccionSamples,puerto,archivoResultados):
+    def procesar(self,direccionSamples,AI_puerto,AI_address,archivoResultados):
         '''
         Esta funcíon permite mandar una orden a la linea de comandos
         direccionSamples: Dirección relativa de las muestras con la extensión .wav
@@ -32,7 +32,7 @@ class Tool():
         '''    
     
         os.system(f'curl -F "audio=@{direccionSamples};type=audio/wav" -XPOST \
-            http://localhost:{puerto}/model/predict > {archivoResultados}')
+            http://{AI_address}:{AI_puerto}/model/predict > {archivoResultados}')
         # Comando tomado de: https://github.com/IBM/MAX-Audio-Classifier en command line
         return
     
@@ -57,36 +57,35 @@ if __name__=="__main__":
     #Instanciamiento
     tool=Tool() 
     #ip del broker mqtt
-    broker_address="localhost"
+    broker_address="192.168.0.106"
+    #broker_address=AI_address="localhost"
     #Puerto Expuesto del broker
-    port=1885
+    port=1883
     #Topico al que se desea publicar
-    topico="Esteban/"
-    #Periodo en el que se aniliza el .wav
-    tiempoRepeticion=10
+    topico="Esteban/IA"
+    #Periodo de espera .wav
+    tiempoEspera=1
     #Archivo para guardar los resultados de la inteligencia artificial (AI)
     archivoResultados='resultados.json'
     #Dirección relativa de la muestra que se quiere analiza con la AI
-    direccionSamples='samples/audio1.wav'
+    direccionSamples='samples/audio.wav'
     #Puerto que expone la aplicación de la AI
-    puerto=5000
+    AI_puerto=5000
+    #Dirección de AI
+    AI_address="192.168.0.106"
+    #AI_address="localhost"
     # Se inicializa el mensaje de publicación en el broker mqtt
     mensaje=''
 
-    
-    m=0
-    audios=3
-    while m<audios:
+
+    while True:
     # Ciclo infinito de análisis
     #while True:
-        #Dirección relativa de la muestra .wav
-        direccionSamples=f'samples/audio{m+1}.wav'
-        tool.procesar(direccionSamples,puerto,archivoResultados)
         
+        tool.procesar(direccionSamples,AI_puerto,AI_address,archivoResultados)
         mensaje=tool.leer(archivoResultados)
         tool.publish(broker_address,port,topico,mensaje)
-        m+=1  
-        time.sleep(tiempoRepeticion)
+        time.sleep(tiempoEspera)
 
 
 
