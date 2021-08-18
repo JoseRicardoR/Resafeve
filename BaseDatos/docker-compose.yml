@@ -1,36 +1,60 @@
-# Se crea por defecto un alias de cada docker con el nombre del servicio
-# Para ejecutarla: sudo docker-compose up -d
-# Mirar donde se está ejecutando sudo docker logs 'test_app'
-# Colocar en el sevidor de phpmyadmin 'ser_mariadb'
-
+## Todo Este proyecto fue adaptado de:
+# http://josejuansanchez.org/iot-dashboard/
 version: '3.1'
 
 services:
-  ser_mariadb:
-    image: mariadb:10.6.1-focal
-    container_name: test_mariadb
-    volumes: 
-      - /home/esteban2/docker/learning/phpmyadmin/mysql-data:/var/lib/mysql
-    restart: always
-    ports: 
-      - 3307:3306
-    environment:
-      MYSQL_ROOT_PASSWORD: root
-      
-  ser_phpmyadmin:
-    image: phpmyadmin/phpmyadmin:5.0.0
-    container_name: test_phpmyadmin
-    #image: phpmyadmin:5.1.0-apache
-    restart: always
-    ports:
-      - 8080:80
-    environment:
-      - PMA_ARBITRARY=1
+    mosquitto:
+        image: ${ImageMosquittoService}
+        #restart: always
+        ports: 
+            - ${PortsMosquittoService}:1883  
+        volumes:
+            - ${VolumesConfigMosquittoService}:/mosquitto/config
+            - ./mosquitto/data:/mosquitto/data
+            - ./mosquitto/log:/mosquitto/log
+    
+    telegraf: 
+        image: ${ImageTelegrafService}
+        #restart: always
+        volumes:
+            - ${VolumenTelegratService}:/etc/telegraf/telegraf.conf
+        depends_on: 
+            - influxdb
+    
 
-  ser_app:
-    image: myapp:1.0.0
-    container_name: test_app
-    restart: always
+    
+    influxdb:
+        image: ${ImageInfluxdbService}
+        #restart: always
+        ports: 
+            - ${PortsInfluxdbService}:8086
+        volumes: 
+            - ${VolumesInfluxdbInfluxdbService}:/var/lib/influxdb
+        environment: 
+            - INFLUXDB_DB=${EnvironmentINFLUXDB_DBInfluxdbService}
+            - INFLUXDB_ADMIN_USER=${EnvironmentINFLUXDB_ADMIN_USERInfluxdbService}
+            - INFLUXDB_ADMIN_PASSWORD=${EnvironmentINFLUXDB_ADMIN_PASSWORDInfluxdbService}
+            - INFLUXDB_HTTP_AUTH_ENABLED=true
+            
+    grafana: 
+        image: ${ImageGrafanaService} 
+        #restart: always
+        ports:
+            - ${PortsGrafanaService}:3000 
+        volumes:
+            - ${VolumesGrafanaGrafanaService}:/var/lib/grafana  
+        depends_on: 
+            - influxdb
+volumes:
+    grafana-storage3:
+        external: false
+            
 
-      
-        
+# En un archivo config/mosquitto.conf agregar:
+
+#listener 1883 0.0.0.0
+#allow_anonymous true
+#persistence true
+#persistence_location /mosquitto/data/
+#log_dest file /mosquitto/log/mosquitto.log
+ 

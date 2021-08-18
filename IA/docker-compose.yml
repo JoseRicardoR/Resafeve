@@ -1,0 +1,10 @@
+version: '3.1'
+
+services:
+    max_audio_classifier:
+        build: ./MAX-Audio-Classifier
+	    #container_name: max-audio
+        restart: always
+        ports: 
+            - 5002:5000  
+        

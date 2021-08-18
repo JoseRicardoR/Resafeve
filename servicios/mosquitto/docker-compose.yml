@@ -1,0 +1,24 @@
+## Todo Este proyecto fue adaptado de:
+# http://josejuansanchez.org/iot-dashboard/
+version: '3.1'
+
+services:
+    mosquitto:
+        image: ${ImageMosquittoService}
+        #restart: always
+        ports: 
+            - ${PortsMosquittoService}:1883  
+        volumes:
+            - ${VolumesConfigMosquittoService}:/mosquitto/config
+            - ./mosquitto/data:/mosquitto/data
+            - ./mosquitto/log:/mosquitto/log
+            
+
+# En un archivo config/mosquitto.conf agregar:
+
+#listener 1883 0.0.0.0
+#allow_anonymous true
+#persistence true
+#persistence_location /mosquitto/data/
+#log_dest file /mosquitto/log/mosquitto.log
+ 

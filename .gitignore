@@ -1,14 +1,9 @@
 # created by virtualenv automatically
 .vscode
-BaseDatos/__pycache__/
-BaseDatos/bin/
-Docente/
-BaseDatos/include/
-BaseDatos/lib/
 #BaseDatos/referencias*
 areaprueba
-GuardarDatos/influxdb_data
-GuardarDatos/docs
+BaseDatos/influxdb_data
+BaseDatos/docs
 IBMDeveloper*
 BrokerMqttPython/bin
 BrokerMqttPython/lib
