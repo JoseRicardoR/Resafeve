@@ -29,3 +29,9 @@ Error: No se conecta la base de datos a mosquitto:
 
 Solución: No colocar las redes con las que se hace el docker-compose sino la de la Raspberry
 https://dzone.com/articles/raspberry-pi-iot-sensors-influxdb-mqtt-and-grafana
+
+
+No esa no era la solución: Gracias a Dios la solución era enviar bien la información o en el formato establecido en telegraf (Yo establecí un json):
+mosquitto_pub -t Esteban/Hoooo -m "{\"numero\":10}"
+
+Nota: Colocar con lowercase las bases de datos
