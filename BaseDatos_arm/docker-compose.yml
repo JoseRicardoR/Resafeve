@@ -1,0 +1,60 @@
+## Todo Este proyecto fue adaptado de:
+# http://josejuansanchez.org/iot-dashboard/
+version: '3.1'
+
+services:
+    mosquitto:
+        image: ${ImageMosquittoService}
+        #restart: always
+        ports: 
+            - ${PortsMosquittoService}:1883  
+        volumes:
+            - ${VolumesConfigMosquittoService}:/mosquitto/config
+            - ./mosquitto/data:/mosquitto/data
+            - ./mosquitto/log:/mosquitto/log
+    
+    telegraf: 
+        image: ${ImageTelegrafService}
+        #restart: always
+        volumes:
+            - ${VolumenTelegratService}:/etc/telegraf/telegraf.conf
+        depends_on: 
+            - influxdb
+    
+
+    
+    influxdb:
+        image: ${ImageInfluxdbService}
+        #restart: always
+        ports: 
+            - ${PortsInfluxdbService}:8086
+        volumes: 
+            - ${VolumesInfluxdbInfluxdbService}:/var/lib/influxdb
+        environment: 
+            - INFLUXDB_DB=${EnvironmentINFLUXDB_DBInfluxdbService}
+            - INFLUXDB_ADMIN_USER=${EnvironmentINFLUXDB_ADMIN_USERInfluxdbService}
+            - INFLUXDB_ADMIN_PASSWORD=${EnvironmentINFLUXDB_ADMIN_PASSWORDInfluxdbService}
+            - INFLUXDB_HTTP_AUTH_ENABLED=true
+            
+    grafana: 
+        image: ${ImageGrafanaService} 
+        #restart: always
+        ports:
+            - ${PortsGrafanaService}:3000 
+        volumes:
+            - ${VolumesGrafanaGrafanaService}:/var/lib/grafana  
+        depends_on: 
+            - influxdb
+volumes:
+    grafana-storage3:
+        external: false
+            
+
+# En un archivo config/mosquitto.conf agregar:
+
+#listener 1883 0.0.0.0
+#allow_anonymous true
+#persistence true
+#persistence_location /mosquitto/data/
+#log_dest file /mosquitto/log/mosquitto.log
+ 

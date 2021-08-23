@@ -17,3 +17,15 @@ Aprender a manejar Grafana:https://www.youtube.com/watch?v=GLE71pIHUU8
 Poner variables de entorno a los servicios: https://github.com/docker/compose/issues/3079
 
 Variables de entorno en Docker Compose
+
+
+Problemas de reconocimiento de root: https://github.com/influxdata/influxdb/issues/8157
+
+create user admin with password 'admin' with all privileges
+
+create user root with password 'root' with all privileges
+
+Error: No se conecta la base de datos a mosquitto:
+
+Solución: No colocar las redes con las que se hace el docker-compose sino la de la Raspberry
+https://dzone.com/articles/raspberry-pi-iot-sensors-influxdb-mqtt-and-grafana
