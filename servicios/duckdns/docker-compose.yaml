@@ -1,13 +1,11 @@
-version: "2"
+version: '3.1'
 services:
   duckdns:
-    image: linuxserver/duckdns
-    #container_name: duckdns
+    image: linuxserver/duckdns:version-6b959acf
     environment:
       - TZ=Europe/London
-      - SUBDOMAINS=raspberrypi3sistemasembebidos #subdomain2
+      - SUBDOMAINS=raspi3embpro
       - TOKEN=364c6eb6-418a-4bb4-b80f-79025f21d6b8
       - LOG_FILE=false #optional
-    volumes:
-      - ./config:/config #optional
-    restart: unless-stopped
+    restart: always
+

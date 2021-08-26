@@ -14,7 +14,7 @@ services:
             - ./mosquitto/log:/mosquitto/log
     
     telegraf: 
-        image: telegraf:1.18
+        image: telegraf:1.18.3
         restart: always
         volumes:
             - ./telegraf/telegraf.conf:/etc/telegraf/telegraf.conf
@@ -37,16 +37,16 @@ services:
             - INFLUXDB_HTTP_AUTH_ENABLED=true
             
     grafana: 
-        image: grafana/grafana:7.5.7  
+        image: grafana/grafana:7.5.7 
         restart: always
         ports:
             - 3000:3000 
         volumes:
-            - grafana-storage:/var/lib/grafana  
+            - grafana-storage3:/var/lib/grafana  
         depends_on: 
             - influxdb
 volumes:
-    grafana-storage:
+    grafana-storage3:
         external: false
             
 

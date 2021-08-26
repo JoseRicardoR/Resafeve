@@ -35,3 +35,10 @@ No esa no era la solución: Gracias a Dios la solución era enviar bien la infor
 mosquitto_pub -t Esteban/Hoooo -m "{\"numero\":10}"
 
 Nota: Colocar con lowercase las bases de datos
+
+Las variables de entorno no son muy buenas en arm o almenos como las tengo yo declaradas
+
+
+Guardar string en la base de datos
+
+https://github.com/influxdata/telegraf/issues/7536
