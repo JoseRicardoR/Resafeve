@@ -49,17 +49,19 @@ services:
     
     ser_brokerconection:
         build: ./BrokerMqttPython/BrokerConection
-        #container_name: brokerconection:1.0
         volumes: 
         - ./BrokerMqttPython/samples:/usr/src/app/samples
         restart: always
+        depends_on:
+            - mosquitto
 
-    ser_generadoraudio:
-        build: ./BrokerMqttPython/generadorAudio
+
+    #ser_generadoraudio:
+        #build: ./BrokerMqttPython/generadorAudio
         #container_name: brokerconection:1.0
-        volumes: 
-        - ./BrokerMqttPython/samples:/usr/src/app/samples
-        restart: always
+        #volumes: 
+        #- ./BrokerMqttPython/samples:/usr/src/app/samples
+        #restart: always
 
 volumes:
     grafana-storage:
