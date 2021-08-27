@@ -1,0 +1,11 @@
+# created by virtualenv automatically
+.vscode
+#BaseDatos/referencias*
+amd/BaseDatos/influxdb_data
+amd/BaseDatos/docs
+amd/IBMDeveloper*
+amd/BrokerMqttPython/bin
+amd/BrokerMqttPython/lib
+amd/BrokerMqttPython/samples/audio*
+amd/BrokerMqttPython/resultados*
+amd/chainsaw_samples

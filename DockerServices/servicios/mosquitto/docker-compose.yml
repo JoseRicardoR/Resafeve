@@ -4,12 +4,12 @@ version: '3.1'
 
 services:
     mosquitto:
-        image: ${ImageMosquittoService}
-        #restart: always
+        image: eclipse-mosquitto:2.0.10
+        restart: always
         ports: 
-            - ${PortsMosquittoService}:1883  
+            - 1883:1883  
         volumes:
-            - ${VolumesConfigMosquittoService}:/mosquitto/config
+            - ./mosquitto/config:/mosquitto/config
             - ./mosquitto/data:/mosquitto/data
             - ./mosquitto/log:/mosquitto/log
             

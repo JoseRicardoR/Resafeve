@@ -1,5 +1,6 @@
 ## Todo Este proyecto fue adaptado de:
 # http://josejuansanchez.org/iot-dashboard/
+# para montar es: sudo docker-compose up -d
 version: '3.1'
 
 services:
@@ -9,15 +10,15 @@ services:
         ports: 
             - 1883:1883  
         volumes:
-            - ./mosquitto/config:/mosquitto/config
-            - ./mosquitto/data:/mosquitto/data
-            - ./mosquitto/log:/mosquitto/log
+            - ./BaseDatos/mosquitto/config:/mosquitto/config
+            - ./BaseDatos/mosquitto/data:/mosquitto/data
+            - ./BaseDatos/mosquitto/log:/mosquitto/log
     
     telegraf: 
         image: telegraf:1.18.3
         restart: always
         volumes:
-            - ./telegraf/telegraf.conf:/etc/telegraf/telegraf.conf
+            - ./BaseDatos/telegraf/telegraf.conf:/etc/telegraf/telegraf.conf
         depends_on: 
             - influxdb
     
@@ -29,7 +30,7 @@ services:
         ports: 
             - 8086:8086
         volumes: 
-            - ./influxdb_data:/var/lib/influxdb
+            - ./BaseDatos/influxdb_data:/var/lib/influxdb
         environment: 
             - INFLUXDB_DB=esteban_db
             - INFLUXDB_ADMIN_USER=admin
@@ -42,11 +43,26 @@ services:
         ports:
             - 3000:3000 
         volumes:
-            - grafana-storage3:/var/lib/grafana  
+            - grafana-storage:/var/lib/grafana  
         depends_on: 
             - influxdb
+    
+    ser_brokerconection:
+        build: ./BrokerMqttPython/BrokerConection
+        #container_name: brokerconection:1.0
+        volumes: 
+        - ./BrokerMqttPython/samples:/usr/src/app/samples
+        restart: always
+
+    ser_generadoraudio:
+        build: ./BrokerMqttPython/generadorAudio
+        #container_name: brokerconection:1.0
+        volumes: 
+        - ./BrokerMqttPython/samples:/usr/src/app/samples
+        restart: always
+
 volumes:
-    grafana-storage3:
+    grafana-storage:
         external: false
             
 
