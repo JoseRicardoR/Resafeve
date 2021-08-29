@@ -62,10 +62,6 @@ void loop() {
 //*** RECORD ADC-I2S ***
 void i2s_adc(void *arg)
 {
-  /*byte header[headerSize];
-  wavHeader(header, FLASH_RECORD_SIZE);
-  client.publish(root_topic_publish, header, headerSize);*/
-
   int i2s_read_len = I2S_READ_LEN;
   int flash_wr_size = 0;
   size_t bytes_read;
@@ -167,54 +163,6 @@ void i2s_adc_data_scale(uint8_t* d_buff, uint8_t* s_buff, uint32_t len)
     d_buff[j++] = dac_value * 256 / 2048 ;
   }
 }
-//***wav Header**
-/*void wavHeader(byte* header, int wavSize) {
-  header[0] = 'R';
-  header[1] = 'I';
-  header[2] = 'F';
-  header[3] = 'F';
-  unsigned int fileSize = wavSize + headerSize - 8;
-  header[4] = (byte)(fileSize & 0xFF);          //Audio size..
-  header[5] = (byte)((fileSize >> 8) & 0xFF);
-  header[6] = (byte)((fileSize >> 16) & 0xFF);
-  header[7] = (byte)((fileSize >> 24) & 0xFF); //..
-  header[8] = 'W';
-  header[9] = 'A';
-  header[10] = 'V';
-  header[11] = 'E';
-  header[12] = 'f';
-  header[13] = 'm';
-  header[14] = 't';
-  header[15] = ' ';
-  header[16] = 0x10;  // Resolucion en bits..
-  header[17] = 0x00;
-  header[18] = 0x00;
-  header[19] = 0x00; //..
-  header[20] = 0x01; //Audio format= 1(PCM) ..
-  header[21] = 0x00; //..
-  header[22] = 0x01; // numero de canales ..
-  header[23] = 0x00; //..
-  header[24] = 0x80; //Samplerate ..
-  header[25] = 0x3E; 
-  header[26] = 0x00;
-  header[27] = 0x00; //..
-  header[28] = 0x00; //Byte Rate .. SampleRate * NumChannels * BitsPerSample/8
-  header[29] = 0x7D;
-  header[30] = 0x00;
-  header[31] = 0x00; //..
-  header[32] = 0x02; //Block align .. NumChannels * BitsPerSample/8
-  header[33] = 0x00; //..
-  header[34] = 0x10; //BitsPerSample
-  header[35] = 0x00; //..
-  header[36] = 'd';
-  header[37] = 'a';
-  header[38] = 't';
-  header[39] = 'a';
-  header[40] = (byte)(wavSize & 0xFF);        //Audio size..
-  header[41] = (byte)((wavSize >> 8) & 0xFF);
-  header[42] = (byte)((wavSize >> 16) & 0xFF);
-  header[43] = (byte)((wavSize >> 24) & 0xFF);//..
-}*/
 //***PRINT BUFFER ***
 void example_disp_buf(uint8_t* buf, int length)
 {
