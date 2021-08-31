@@ -50,9 +50,23 @@ Con el montaje inicial se desarrollo un script de python que recibia la informac
 
 Este proceso funcionaba pero la calidad del sonido era mala y los tiempos de eran mucho más largos de lo esperado (enviar 9 segundos costaba casi minuto y medio). Una alternativa era usar las funciones beginplubish() y endpublish() de PubSubClient para que el proceso fuese más bien un stream de datos. Más sin embargo, estas dos funciones no enviaban toda la información por algún error desconocido. 
 
-La solución inicial fue bajar la frecuencia de muestreo, de 44100Hz a 8000Hz. Esto soluciono el problema del tiempo que ahora en total solo 16 segundos, es decir 2 segundos de envio por paquetes de 3 segundos. Paquetes mayores a 3 segundos con las condiciones descritas llenan la memoria. En terminos generales se espera un tamaño de paquete alrededor de 48000 bytes. 
-Por otro lado el problema de la calidad del audio seguia existiendo. Se mejoro entonces la etapa de amplificación como muestran las imagenes.
-![Montaje con amplificación y micrfono electret](https://drive.google.com/file/d/1DOD7S09CEUXWwYKmG7pCqd7SxsyzbBJW/view)
+La solución inicial fue bajar la frecuencia de muestreo, de 44100Hz a 8000Hz. Antes de ello se probo en la inteligencia artificial que aún con audios de 8000Hz se obtuvieran resultados decentes. En comparación los resultados se muestran a continuación:
+*44100 Hz: {"status": "ok", "predictions": [{"label_id": "/m/01j4z9", "label": "Chainsaw", "probability": 0.6540094614028931}, {"label_id": "/m/04_sv", "label": "Motorcycle", "probability": 0.1308945119380951}, {"label_id": "/t/dd00066", "label": "Medium engine (mid frequency)", "probability": 0.12884050607681274}, {"label_id": "/m/0_ksk", "label": "Power tool", "probability": 0.11332365870475769}, {"label_id": "/m/07yv9", "label": "Vehicle", "probability": 0.10684427618980408}]}
+*8000 Hz: {"status": "ok", "predictions": [{"label_id": "/m/01j4z9", "label": "Chainsaw", "probability": 0.4117594063282013}, {"label_id": "/m/04_sv", "label": "Motorcycle", "probability": 0.206061452627182}, {"label_id": "/m/07yv9", "label": "Vehicle", "probability": 0.1337493658065796}, {"label_id": "/m/0_ksk", "label": "Power tool", "probability": 0.1071915328502655}, {"label_id": "/t/dd00066", "label": "Medium engine (mid frequency)", "probability": 0.07981646060943604}]}
+
+Evidentemente con la frecuencia de muestreo mayor son mejores los resultados más con la frecuencia un poco más baja igual funciona.
+Esto soluciono el problema del tiempo que ahora en total solo 16 segundos, es decir 2 segundos de envio por paquetes de 3 segundos. Paquetes mayores a 3 segundos con las condiciones descritas llenan la memoria. En terminos generales se espera un tamaño de paquete alrededor de 48000 bytes. 
+Por otro lado el problema de la calidad del audio seguia existiendo. Se probaron entonces mejores etapas de amplifiación como las mostradas en las imagenes.
+![Circuitos de amplificación señal de microfono electret](https://user-images.githubusercontent.com/36318647/131569777-574a6480-3d16-4da9-88e6-5e8b576d438a.PNG)
+
+Pese a esto el montaje mostrado en la siguiente figura no tenia una buena calidad de sonido, además de tener una frecuencia de muestreo baja.
+![Montaje con amplificación y micrfono electret](https://user-images.githubusercontent.com/36318647/131569044-76cfa8a4-bb35-49d9-85ca-5633d9144608.jpg)
+)
+
+En todo caso no se consiguio que la señal de audio fuera mejor, ni añadiendo condensadores de desacople, en su mayoria es ruido como se ve en la siguiente imagen. Por ende el sonido no es legible.
+![Audio Con microfono electret](https://user-images.githubusercontent.com/36318647/131570448-9fa7ce11-8515-4e02-b2bc-db267fbcb3ff.PNG)
+
+Se buscaron entonces alternativas y se encontro una de cambiar el sensor del proyecto.
 
 ### Microfono I2s INMp4
 
