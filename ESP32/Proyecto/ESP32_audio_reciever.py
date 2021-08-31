@@ -80,19 +80,25 @@ header[43] = byte_recordsize[3]  # ..
 #............. Recibimiento de datos .........................
 # The callback for when the client receives a CONNACK response from the server.
 def on_connect(client, userdata, flags, rc):
-    print("Connected with result code "+str(rc))
+    if rc == 0:
+        print("Connected to MQTT Broker! "+str(rc))
+    else:
+        print("Failed to connect, return code %d\n", rc)
     # Subscribing in on_connect() means that if we lose the connection and
     # reconnect then subscriptions will be renewed.
     client.subscribe(sub_topic)
 
-
-
+#Called when the client disconnects from the broker
+def on_disconnect(client, userdata, rc):
+    if rc != 0:
+        print("Unexpected disconnection.") 
 
 # The callback for when a PUBLISH message is received from the server.
 def on_message(client, userdata, msg):
     # Hey Python, voy a usar una variable global
     global num_mess
     global AudioListo
+    #global f... quiza esto sirva!!!!!!!!!!!!!
 
     #si el es el primer paquete se crea el file con el header
     if num_mess == 0:
@@ -121,7 +127,9 @@ def on_message(client, userdata, msg):
 
 # ...............Conexion con MQTT..............................
 client = mqtt.Client()              # se instancia el cliente
+
 client.on_connect = on_connect      # funcion que se ejecuta una vez conectado
+client.on_disconnect = on_disconnect  #Called when the client disconnects from the broker
 client.on_message = on_message      # funcion que se ejecuta cada nuevo mensaje
 client.connect(broker_address, port)  # conexion al broker/servidor
 # Loop que mantiene el cliente funcionando. Crt + c en consola para acabar script
