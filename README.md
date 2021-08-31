@@ -63,7 +63,9 @@ Por otro lado el problema de la calidad del audio seguia existiendo. Se probaron
 ![Circuitos de amplificación señal de microfono electret](https://user-images.githubusercontent.com/36318647/131569777-574a6480-3d16-4da9-88e6-5e8b576d438a.PNG)
 
 Pese a esto el montaje mostrado en la siguiente figura no tenia una buena calidad de sonido, además de tener una frecuencia de muestreo baja.
-![Montaje con amplificación y micrfono electret](https://user-images.githubusercontent.com/36318647/131569044-76cfa8a4-bb35-49d9-85ca-5633d9144608.jpg)
+Montaje con amplificación y micrfono electret.
+
+<img src="https://user-images.githubusercontent.com/36318647/131569044-76cfa8a4-bb35-49d9-85ca-5633d9144608.jpg" width="350">
 
 En todo caso no se consiguio que la señal de audio fuera mejor, ni añadiendo condensadores de desacople, en su mayoria es ruido como se ve en la siguiente imagen. Por ende el sonido no es legible.
 ![Audio Con microfono electret](https://user-images.githubusercontent.com/36318647/131570448-9fa7ce11-8515-4e02-b2bc-db267fbcb3ff.PNG)
@@ -82,10 +84,18 @@ El error consiste en que a veces el audio enviado no se graba correctamente, las
 Revisando el montaje se encuentra que uno de los pines esta mal conectado. Si se usa solo la señal mono izquierda es decir, .channel_format = I2S_CHANNEL_FMT_ONLY_LEFT,  se debe conectar el pin L/R a ground obligatoriamente. Dejarlo sin conectar como sugieren algunos tutoriales puede ocasionar el problema encontrado.
 
 El montaje final es como se muestra a continuación. Muy sencillo.
-![IMG_20210828_173243](https://user-images.githubusercontent.com/36318647/131571799-88136bbe-3e79-4f17-9165-17f1c73cafd3.jpg)
+
+<img src="https://user-images.githubusercontent.com/36318647/131571799-88136bbe-3e79-4f17-9165-17f1c73cafd3.jpg" width="500">
 El codigo completo se encuentra en la carpeta del proyecto con el nombre I2S_Sampling.ino.
+La señal de audio de salida es en definitiva clara y sin interrupciones. Se puede además muestrear a mayores frecuencias, se elige la de 16000Hz para no saturar de datos la red y la memoria del ESP32.
+![Audio final](https://user-images.githubusercontent.com/36318647/131574616-8b3a6e98-f21a-474e-bff3-a4ae040e81f5.PNG)
+
+Tambien se cambio el script de python para que ahora solo se requiera la libreria de Pahoo, así pues lo que se hace es generar un header al inicio del archivo que lo hace legible como .wav. Dicho header varia en relación a la frecuencia de muestreo, el numero de bits de resolución y el largo del archivo .wav.
+El archivo definitivo tiene el nombre de ESP32_audio_receiver.py, y la explicación del header se puede encontrar en: http://soundfile.sapp.org/doc/WaveFormat/.
+
 
 ### FreeRTOS
+
 
 ## Funcionalidad DockerServicios
 
@@ -130,3 +140,4 @@ Recursos adicionales
 * Esp32 Mqtt explicado: https://randomnerdtutorials.com/esp32-mqtt-publish-subscribe-arduino-ide/
 * Inteligencia Artificial que clasifica los sonidos: https://www.google.com/url?q=https://github.com/IBM/MAX-Audio-Classifier&sa=D&source=editors&ust=1630442220276000&usg=AOvVaw06XKVdFrBWjtAnfdxmKH8F 
 * Documentacion Espressif del ESP32: https://docs.espressif.com/projects/esp-idf/en/latest/esp32/index.html
+* Datasheet del Microfono INMP441: https://www.google.com/url?q=https://invensense.tdk.com/wp-content/uploads/2015/02/INMP441.pdf&sa=D&source=editors&ust=1630447016673000&usg=AOvVaw1flXUa5FAnurC2niqlp07R
