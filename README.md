@@ -135,7 +135,7 @@ sudo docker-compose down
 
 
 
-## Referencias
+## Bibliografia
 Recursos adicionales
 * MQTT - Resumen de todo con explicaciones y links de temas relacionados: https://aprendiendoarduino.wordpress.com/2018/11/19/mqtt/ 
 * Esp32 Mqtt explicado: https://randomnerdtutorials.com/esp32-mqtt-publish-subscribe-arduino-ide/
