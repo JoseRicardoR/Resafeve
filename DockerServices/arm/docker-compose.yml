@@ -32,7 +32,7 @@ services:
         volumes: 
             - ./BaseDatos/influxdb_data:/var/lib/influxdb
         environment: 
-            - INFLUXDB_DB=esteban_db
+            - INFLUXDB_DB=embebidos
             - INFLUXDB_ADMIN_USER=admin
             - INFLUXDB_ADMIN_PASSWORD=admin
             - INFLUXDB_HTTP_AUTH_ENABLED=true
@@ -47,13 +47,13 @@ services:
         depends_on: 
             - influxdb
     
-    ser_brokerconection:
-        build: ./BrokerMqttPython/BrokerConection
-        volumes: 
-        - ./BrokerMqttPython/samples:/usr/src/app/samples
-        restart: always
-        depends_on:
-            - mosquitto
+    #ser_brokerconection:
+        #build: ./BrokerMqttPython/BrokerConection
+        #volumes: 
+        #- ./BrokerMqttPython/samples:/usr/src/app/samples
+        #restart: always
+        #depends_on:
+            #- mosquitto
 
 
     #ser_generadoraudio:
