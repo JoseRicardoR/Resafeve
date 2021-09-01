@@ -12,7 +12,7 @@ TaskHandle_t RecordAudioTask;
 
 //*********** MQTT CONFIG **************
 PubSubClient client(espClient);
-const char *mqtt_server = "3.16.69.93";
+const char *mqtt_server = "179.32.157.54";
 const int mqtt_port = 1883;
 const char *mqtt_user = "";
 const char *mqtt_pass = "";
@@ -62,6 +62,7 @@ void loop() {
 //*** RECORD ADC-I2S ***
 void i2s_adc(void *arg)
 {
+
   int i2s_read_len = I2S_READ_LEN;
   int flash_wr_size = 0;
   size_t bytes_read;
@@ -69,8 +70,9 @@ void i2s_adc(void *arg)
   char* i2s_read_buff = (char*) calloc(i2s_read_len, sizeof(char));       // Buffer de lectura del I2S
   uint8_t* flash_write_buff = (uint8_t*) calloc(i2s_read_len, sizeof(char));   //buffer de escritura (flash memory)
 
-  //i2s_adc_enable(I2S_NUM);        //Start to use I2S built-in ADC mode. (less noise)
-  //i2s_read(I2S_PORT, (void*) i2s_read_buff, i2s_read_len, &bytes_read, portMAX_DELAY);  //Tal parece que le toma tiempo al I2S iniciarse entonces
+  const char* senal = "Empieza";
+  client.publish(root_topic_publish, senal, false); // Señal para la raspberry de que empieza la grabacion
+  
   tiempoEmess = millis();
   Serial.println(" ... Recording Start ... ");
   while (flash_wr_size < FLASH_RECORD_SIZE) {
@@ -95,7 +97,6 @@ void i2s_adc(void *arg)
   }
   tiempoFmess = millis();
   Serial.println(" ... Recording Finish ... ");
-  //i2s_adc_disable(I2S_NUM);        //Stop to use I2S built-in ADC mode
 
   diferenciaTiempoMess = tiempoFmess - tiempoEmess;
   Serial.println("Tiempo total: ");
