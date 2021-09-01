@@ -46,6 +46,15 @@ services:
             - grafana-storage:/var/lib/grafana  
         depends_on: 
             - influxdb
+        environment:
+          GF_RENDERING_SERVER_URL: http://renderer:8081/render
+          GF_RENDERING_CALLBACK_URL: http://grafana:3000/
+          
+        renderer:
+    	   image: adejong/grafana-image-renderer-pi:1.0.8-beta2
+    	container_name: grafana-image-renderer-pi
+    	ports:
+      	   - 8081
     
     #ser_brokerconection:
         #build: ./BrokerMqttPython/BrokerConection
