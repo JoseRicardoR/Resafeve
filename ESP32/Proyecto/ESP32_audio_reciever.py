@@ -1,11 +1,10 @@
 import paho.mqtt.client as mqtt  # Libreria MQTT
-import time                      # Libreria para dar delays
 
 # ... Archivo encendido...
 print("Receptor de audio encendido")
 
 # .............. SETUP Constants........................
-broker_address = "localhost"  # use external broker or server
+broker_address = "179.32.157.54"  # use external broker or server
 port = 1883
 sub_topic = "ESP32/Data_output"
 pub_topic = "ESP32/Signal_input"
@@ -18,7 +17,8 @@ recordsize = samplerate * resolution / 8 * t
 # n_pack = (fs*16bits*t/2)/buffersize
 packet_number = round((recordsize/buffersize) + 0.49)
 num_mess = 0                    # numero de mensajes recibidos
-AudioListo = False              # booleano que indica si el audio ya puede ser enviado a la IA
+AudioListo = False             # booleano que indica si el audio ya puede ser enviado a la IA
+Escribiendo = False            # boolenao que indica si se esta escribiendo el audio en este momento
 # ..............................................................
 
 # .......... .wav Setup.....................................
@@ -81,7 +81,7 @@ header[43] = byte_recordsize[3]  # ..
 # The callback for when the client receives a CONNACK response from the server.
 def on_connect(client, userdata, flags, rc):
     if rc == 0:
-        print("Connected to MQTT Broker! "+str(rc))
+        print("Connected to MQTT Broker! Result:"+str(rc))
     else:
         print("Failed to connect, return code %d\n", rc)
     # Subscribing in on_connect() means that if we lose the connection and
@@ -97,32 +97,35 @@ def on_disconnect(client, userdata, rc):
 def on_message(client, userdata, msg):
     # Hey Python, voy a usar una variable global
     global num_mess
+    global Escribiendo
     global AudioListo
-    #global f... quiza esto sirva!!!!!!!!!!!!!
+    global f
 
+    #print(msg.payload)
     #si el es el primer paquete se crea el file con el header
-    if num_mess == 0:
+    if str(msg.payload) == "b'Empieza'" :
+        f = open(filename, 'wb')   # se crea el archivo de audio, wb = write-bytes
+        f.seek(0)          #se escribe desde cero
+        num_mess = 0
         f.write(header)        # se le añade el header al file
         print("Inicia escritura audio...")
-        AudioListo = False     # a partir de aqui se esta escribiendo el audio, no esta listo para la IA
-    
-    #Luego escribe el paquete de datos recibido y cuenta el pauete recibido
-    f.write(msg.payload)
-    num_mess = num_mess+1
-
-    #Se imprime en consola el % de mensaje recibido
-    print("Writing... " + str(num_mess/(packet_number)*100)+"%")
+        Escribiendo = True    
+        AudioListo = False   # a partir de aqui se esta escribiendo el audio, no esta listo para la IA
+    elif Escribiendo == True :
+        #Luego escribe el paquete de datos recibido y cuenta el pauete recibido
+        f.write(msg.payload)
+        num_mess = num_mess+1
+        #Se imprime en consola el % de mensaje recibido
+        print("Writing... " + str(num_mess/(packet_number)*100)+"%")
 
     #si ya llegaron todos los pauetes esperados se cierra el file
     if num_mess == (packet_number):
+        f.close()       # cerramos el archivo
         print("Acaba escritura audio...")
-        AudioListo = True  #El audio ya se puede enviar a la IA, hay 20 segundos para ello    
-        time.sleep(20)     #se pausa el programa por 20s
-        AudioListo = False
-        num_mess = 0       #se reinicia el contador de paquetes
-        f.seek(0)          #se escribe desde cero
-        #f.close()
-    # print(msg.payload)
+        Escribiendo = False  
+        AudioListo = True   #El audio ya se puede enviar a la IA, hay 20 segundos para ello    
+
+    
 
 
 # ...............Conexion con MQTT..............................
