@@ -5,7 +5,7 @@ import time                      # Libreria para dar delays
 print("Receptor de audio encendido")
 
 # .............. SETUP Constants........................
-broker_address = "3.16.69.93"  # use external broker or server
+broker_address = "localhost"  # use external broker or server
 port = 1883
 sub_topic = "ESP32/Data_output"
 pub_topic = "ESP32/Signal_input"
