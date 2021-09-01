@@ -74,6 +74,7 @@ Se buscaron entonces alternativas y se encontro una de cambiar el sensor del pro
 
 ### Microfono I2S INMP441
 Tal parece que la conversion analoga digital del ESP32 consume mucho más CPU de la que se espera y hace que los procesos sean más demorados. Además si bien el circuito de amplificación etsa bien, se hace necesario el uso de un filtro para limpiar la señal. Se encontro que un micrfono Mems que usa la interfaz I2S se desarrollo para este tipo de proyectos. Su bloque funcional es como se ve a continuación.
+
 ![INMP441](https://user-images.githubusercontent.com/36318647/131572006-06363d38-0d76-4d52-8974-ec905b930f80.PNG)
 
 Luego como ya todo esta incorporado en este micrfono la labor consiste en configurar el software para su buen funcionamiento. Al incio se obtuvo un problema visible en la imagen a continuación. 
