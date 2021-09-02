@@ -4,7 +4,7 @@ import os
 print("Receptor de audio encendido")
 
 # .............. SETUP Constants........................
-broker_address="localhost"
+broker_address="mosquitto"
 port=1883
 sub_topic = "ESP32/Data_output"
 pub_topic = "ESP32/Signal_input"

@@ -8,9 +8,9 @@ WORKDIR /usr/src/app
 COPY requirements.txt ./
 #RUN ["/bin/sh ", "-c", "pip install --no-cache-dir -r requirements.txt"]
 #RUN apt update
+COPY ./app.py ./
 RUN pip install --no-cache-dir -r requirements.txt
-RUN mkdir samples
+RUN apt update && apt install -y curl 
 
-COPY . .
 
-CMD [ "python3", "./BrokerConection.py" ]
+CMD [ "python3", "./app.py" ]
