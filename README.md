@@ -137,6 +137,29 @@ sudo docker-compose down
 ### FRONT END
 Para el front end(Interfaz hombre maquina) se realizo una pagina web que hace uso de lenguaje HTML, JAVASCRIPT, NODE.js, CSS y PYTHON para su funcionamiento como diseño. Particularmente NODE.js y PYTHON se uso para parte del backend que principalmente es la lectura de la base de datos INFLUXDB. Para hacer una descripcion de cada partede la pagina clara y consisa dividio la pagina en "Encabezado" y "Main".
 
+###ENCABEZADO
+Para el encabezado se siguio la siguiente maqueta de HTML.
+```bash
+nav class="navbar">
+        <div class="navbar_container">
+            <a href="/" class="" id="navbar_logo"><i class="fab fa-pagelines"></i>Resafeve</a>
+        </div>
+        <div class="navbar_containerlinks">
+            <ul class="navbar_menu">
+                <li class="navbar_items">
+                    <a href="https://github.com/esteban11519/SistemasEmbebidos" class="navbar_links">Documentacion</a>
+                </li>
+                <li class="navbar_items">
+                    <a href="/" class="navbar_links">Equipo</a>
+                </li>
+                <li class="navbar_button">
+                    <a href="http://192.168.1.86:3000/d/MZVyWBmRk/embebidos?from=1629944777057&to=1630549577057&orgId=1" class="button">Monitorear</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+```
+
 
 ## Bibliografia
 Recursos adicionales
