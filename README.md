@@ -165,6 +165,8 @@ En el anterior codigo vemos varios elementos <a> que hacen referencia a los "Lin
 ![Screenshot from 2021-09-02 09-09-01](https://user-images.githubusercontent.com/55359032/131862028-b4d13deb-9292-4983-9d54-55efb4f82829.png)
         
 Que como vemos en la maqueta de HTML al presionar "Documentacion" nos redirecciona al github del proyecto mientras que al presionar Monitorear nos direcciona a Grafana a un Dashboard. Ademas de estos elementos tenemos el titulos de la pagina que tiene un estilo particular ya que se le agrego un degrade en la hoja de estilos. Ademas para el "icono" se uso un script prestado por la pagina https://fontawesome.com/, donde al registrarse y poner la etiqueta del script que nos dan para nuestra cuenta ya con solo hacer referencia a la clase "fab fa-pagelines" de la imagen esta aparece en el elemento deseado.
+       
+![Screenshot from 2021-09-02 09-33-40](https://user-images.githubusercontent.com/55359032/131862928-ac8917b4-a6de-4273-8974-699d427a4d28.png)
  
 ```bash    
         
