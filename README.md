@@ -97,7 +97,16 @@ El archivo definitivo tiene el nombre de ESP32_audio_receiver.py, y la explicaci
 
 ### FreeRTOS
 
+## Funcionalidad de la FPGA
 
+La tarjeta FPGA usada para este proyecto es la Blackice II. Este dispositivo cuenta con la posibilidad de ser programado mediante un entorno grafico llamado
+Icestudio mediante bloques que representan los modulos que normalmente se insatancian al ser usado un lenguaje de descripción de hardware convencional
+(Verilog o VHDL).
+![Blackice II](https://user-images.githubusercontent.com/42346359/131914705-aa9a34cd-44ce-4965-8141-9e75d155edac.jpg)
+
+La tarea a realizar por la FPGA en este proyecto consiste en la deteccion de audios validos que puedan ser analizados por medio de una inteligencia artificial,
+esto con el fin de no saturarla con muchas peticiones procedentes de varios microfonos. Para que un audio se considere como valido, un porcentaje arbitrario de las
+muestras determinado por el diseñador, deberá superar 
 ## Funcionalidad DockerServicios
 
 Se encuentra implementado para una arquitectura AMD y ARMv7. En general los siquientes comandos se usan para ambas arquitecturas:
