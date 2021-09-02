@@ -182,7 +182,7 @@ def on_message(client, userdata, msg):
         #Puerto que expone la aplicación de la AI
         AI_puerto=5000
         #Dirección de AI
-        AI_address="mateo-HP-Notebook.local"
+        AI_address="192.168.1.17"
         procesar(direccionSamples,AI_puerto,AI_address,archivoResultados)
         mensaje=leer(archivoResultados)
         publish(broker_address,port,topico,mensaje)

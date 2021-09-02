@@ -6,11 +6,11 @@ FROM python:3.7.3
 WORKDIR /usr/src/app
 
 COPY requirements.txt ./
-#RUN ["/bin/sh ", "-c", "pip install --no-cache-dir -r requirements.txt"]
-#RUN apt update
-COPY ./app.py ./
 RUN pip install --no-cache-dir -r requirements.txt
-RUN apt update && apt install -y curl 
+RUN apt update && apt install -y curl && apt install -y avahi-daemon
 
+COPY . .
 
-CMD [ "python3", "./app.py" ]
+#CMD ["service","dbus", "start","&&","service", "avahi-daemon", "start","&&","python3", "./app.py" ]
+CMD ["python3", "./app.py" ]
+
