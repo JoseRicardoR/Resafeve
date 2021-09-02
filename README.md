@@ -117,8 +117,21 @@ a como se realizan las solicitudes y quien es quien necesita enviar los comandos
 ![Maestro_Esclavo](https://user-images.githubusercontent.com/42346359/131917107-d548e8ba-ecaf-44e4-b512-ff519bc68c69.PNG)
 
 Para esta implementación se hara uso del bloque esclavo presente en una de las librerias de Icestudio.
+
+
 ![Bloque_esclavo](https://user-images.githubusercontent.com/42346359/131917700-eeedaf32-6fe0-4fb4-bad7-48f44ca58fde.PNG)
 
+
+Cada muestra de audio es representada por 2 Bytes de datos (16 bits), Sin embargo el bus de datos de este modulo es de 8 bits (que son recibidos serialmente desde el 
+maestro y organizados en un registro propio del modulo). Por tanto se asignara 2 posiciones de memoria (2 registros de 8 bits mapeados en derterminadas direcciones de memoria),
+a una muestra de audio en un instante. Para el envio de esta señal a la FPGA se cuenta con el bloque "SPI-cmd-regs" que se encargara de primero apuntar a la dirección de
+alguno de los registros de la muestra instantanea y luego escribir el dato designado por el maestro, tambien es posible leer este dato en caso de que se requiera hacer alguna comparación (notese que se requerirá hacer dos veces este proceso para llenar totalmente los registros asignados a la muestra). 
+![SPI_Control_Mapeo](https://user-images.githubusercontent.com/42346359/131919736-5fa2e7a1-381f-472d-ac27-f6eae8ded62c.PNG)
+
+![image](https://user-images.githubusercontent.com/42346359/131919916-3c2372d1-f5ba-42b9-a13d-55d4d770a59c.png)
+
+Arriba se puede ver el control de las posiciones de memoria de todos los registros asociados a la FPGA junto al diagrama que hace posible la concatenanción para la creación de
+la muestra instantanea.
 
 ## Funcionalidad DockerServicios
 
@@ -155,55 +168,6 @@ sudo docker-compose down
 
 ### ARM
 
-
-### INTELIGENCIA ARTIFICIAL
-
-La inteligencia artificial que se uso es la una inteligencia diseñada por IBM con libreis como keras o tensor flow y se entreno con un dataset de goole disponibe en https://research.google.com/audioset/ontology/index.html. Y como ya se menciono antes la documentacion de esta se encuentra en el siguiente github https://github.com/IBM/MAX-Audio-Classifier. Pero en el caso particular de nuestro proyecto hay que hacer algunas aclaracioes.
-
-Como el sonido que se quiere detectar es el de una motosierra, se hizo el analisis de varios sonidos de motosierra y se obtuvo que la mayoria de las prediciones no son exactamente motosierrta("Chainsaw") sino algunas otras etiquetas de sonidos con motores similares. Es de esta manera como obtuvimos una lista de etiquetas que como el ambiente donde estara sera un ambiente totalmente natural es extraño percibir alguno de estos sonidos.
-
-* Medium engine (mid frequency)
-* Vehicle
-* Motorcycle
-* Chainsaw
-* Engine
-* Electric toothbrush
-* Pump (liquid)
-
-Todos los anteriores labels son extraños en un ambiente natural y por eso seran tomados como positivos para alarmar el sistema. Por otro lado la inteligencia artificial tiene un minimo de requisitos y ademas tiene una arquitectura diferente a la de Raspberry, por este motivo se tomo la decision de instalar tal servicio en un computador local de uno de los compañeros mediante el proceso de instalacion de la imagen de docker especificado en la documentacion de esta misma. A modo de ejemplo se expondra el json que retorna la IA para tener idea del comportamiento de  este.
-
-```bash
-{
-    "status": "ok",
-    "predictions": [
-        {
-            "label_id": "/m/06mb1",
-            "label": "Rain",
-            "probability": 0.7376469373703003
-        },
-        {
-            "label_id": "/m/0ngt1",
-            "label": "Thunder",
-            "probability": 0.60517817735672
-        },
-        {
-            "label_id": "/t/dd00038",
-            "label": "Rain on surface",
-            "probability": 0.5905200839042664
-        },
-        {
-            "label_id": "/m/0jb2l",
-            "label": "Thunderstorm",
-            "probability": 0.5793699026107788
-        },
-        {
-            "label_id": "/m/07yv9",
-            "label": "Vehicle",
-            "probability": 0.34878015518188477
-        }
-    ]
-}
-```
 
 ### FRONT END
 Para el front end(Interfaz hombre maquina) se realizo una pagina web que hace uso de lenguaje HTML, JAVASCRIPT, NODE.js, CSS y PYTHON para su funcionamiento como diseño. Particularmente NODE.js y PYTHON se uso para parte del backend que principalmente es la lectura de la base de datos INFLUXDB. Para hacer una descripcion de cada partede la pagina clara y consisa dividio la pagina en "Encabezado" y "Main".
