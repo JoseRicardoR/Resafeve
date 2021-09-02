@@ -96,12 +96,6 @@ El archivo definitivo tiene el nombre de ESP32_audio_receiver.py, y la explicaci
 
 
 ### FreeRTOS
-Se implemento un unico task con FreeRTOS que lee la señal del microfono I2S y publica en mqtt.
-
-### Alimentación
-Encontramos dos opciones de alimentación:
-![Alimentación con paneles solares](https://i2.wp.com/randomnerdtutorials.com/wp-content/uploads/2019/05/esp8266-solar-powered-f.png?resize=1024%2C505&quality=100&strip=all&ssl=1)
-![Alimentación con pila de litio CR123](https://i.imgur.com/mDv02r9.jpg)
 
 ## Funcionalidad de la FPGA
 
@@ -110,9 +104,22 @@ Icestudio mediante bloques que representan los modulos que normalmente se insata
 (Verilog o VHDL).
 ![Blackice II](https://user-images.githubusercontent.com/42346359/131914705-aa9a34cd-44ce-4965-8141-9e75d155edac.jpg)
 
-La tarea a realizar por la FPGA en este proyecto consiste en la deteccion de audios validos que puedan ser analizados por medio de una inteligencia artificial,
+### Tareas
+La tarea principal a realizar por la FPGA en este proyecto consiste en la deteccion de audios validos que puedan ser analizados por medio de una inteligencia artificial,
 esto con el fin de no saturarla con muchas peticiones procedentes de varios microfonos. Para que un audio se considere como valido, un porcentaje arbitrario de las
-muestras determinado por el diseñador, deberá superar 
+muestras que conforman una grabación (este porcentaje es determinado por el diseñador), deberá superar un umbral de intensidad (tambien establecido por el diseñador),
+esto con el fin de determinar que el audio en efecto si puede contener información relevante y no es simplemente silencio o ruido intermitente.
+
+Como ya se mencionó el ESP32 enviará la información referente a la Raspberry por medio de un servidor MQTT. Esta información será enviada a la FPGA por medio de un protocolo
+de comunicacion serial (SPI), para su analisis y posterior devolución de resultados. En esta aplicacion la Raspberry sera el denominado "Maestro" y la FPGA el "esclavo" debido
+a como se realizan las solicitudes y quien es quien necesita enviar los comandos para la correcta operación del modulo.
+
+![Maestro_Esclavo](https://user-images.githubusercontent.com/42346359/131917107-d548e8ba-ecaf-44e4-b512-ff519bc68c69.PNG)
+
+Para esta implementación se hara uso del bloque esclavo presente en una de las librerias de Icestudio.
+![Bloque_esclavo](https://user-images.githubusercontent.com/42346359/131917700-eeedaf32-6fe0-4fb4-bad7-48f44ca58fde.PNG)
+
+
 ## Funcionalidad DockerServicios
 
 Se encuentra implementado para una arquitectura AMD y ARMv7. En general los siquientes comandos se usan para ambas arquitecturas:
@@ -230,3 +237,4 @@ Recursos adicionales
 * Inteligencia Artificial que clasifica los sonidos: https://www.google.com/url?q=https://github.com/IBM/MAX-Audio-Classifier&sa=D&source=editors&ust=1630442220276000&usg=AOvVaw06XKVdFrBWjtAnfdxmKH8F 
 * Documentacion Espressif del ESP32: https://docs.espressif.com/projects/esp-idf/en/latest/esp32/index.html
 * Datasheet del Microfono INMP441: https://www.google.com/url?q=https://invensense.tdk.com/wp-content/uploads/2015/02/INMP441.pdf&sa=D&source=editors&ust=1630447016673000&usg=AOvVaw1flXUa5FAnurC2niqlp07R
+*  Documentacion SPI y Icestudio: https://github.com/Obijuan/Cuadernos-tecnicos-FPGAs-libres/wiki/CT.5:-SPI-esclavo
