@@ -97,6 +97,41 @@ El archivo definitivo tiene el nombre de ESP32_audio_receiver.py, y la explicaci
 
 ### FreeRTOS
 
+## Funcionalidad de la FPGA
+
+La tarjeta FPGA usada para este proyecto es la Blackice II. Este dispositivo cuenta con la posibilidad de ser programado mediante un entorno grafico llamado
+Icestudio mediante bloques que representan los modulos que normalmente se insatancian al ser usado un lenguaje de descripción de hardware convencional
+(Verilog o VHDL).
+![Blackice II](https://user-images.githubusercontent.com/42346359/131914705-aa9a34cd-44ce-4965-8141-9e75d155edac.jpg)
+
+### Tareas
+La tarea principal a realizar por la FPGA en este proyecto consiste en la deteccion de audios validos que puedan ser analizados por medio de una inteligencia artificial,
+esto con el fin de no saturarla con muchas peticiones procedentes de varios microfonos. Para que un audio se considere como valido, un porcentaje arbitrario de las
+muestras que conforman una grabación (este porcentaje es determinado por el diseñador), deberá superar un umbral de intensidad (tambien establecido por el diseñador),
+esto con el fin de determinar que el audio en efecto si puede contener información relevante y no es simplemente silencio o ruido intermitente.
+
+Como ya se mencionó el ESP32 enviará la información referente a la Raspberry por medio de un servidor MQTT. Esta información será enviada a la FPGA por medio de un protocolo
+de comunicacion serial (SPI), para su analisis y posterior devolución de resultados. En esta aplicacion la Raspberry sera el denominado "Maestro" y la FPGA el "esclavo" debido
+a como se realizan las solicitudes y quien es quien necesita enviar los comandos para la correcta operación del modulo.
+
+![Maestro_Esclavo](https://user-images.githubusercontent.com/42346359/131917107-d548e8ba-ecaf-44e4-b512-ff519bc68c69.PNG)
+
+Para esta implementación se hara uso del bloque esclavo presente en una de las librerias de Icestudio.
+
+
+![Bloque_esclavo](https://user-images.githubusercontent.com/42346359/131917700-eeedaf32-6fe0-4fb4-bad7-48f44ca58fde.PNG)
+
+
+Cada muestra de audio es representada por 2 Bytes de datos (16 bits), Sin embargo el bus de datos de este modulo es de 8 bits (que son recibidos serialmente desde el 
+maestro y organizados en un registro propio del modulo). Por tanto se asignara 2 posiciones de memoria (2 registros de 8 bits mapeados en derterminadas direcciones de memoria),
+a una muestra de audio en un instante. Para el envio de esta señal a la FPGA se cuenta con el bloque "SPI-cmd-regs" que se encargara de primero apuntar a la dirección de
+alguno de los registros de la muestra instantanea y luego escribir el dato designado por el maestro, tambien es posible leer este dato en caso de que se requiera hacer alguna comparación (notese que se requerirá hacer dos veces este proceso para llenar totalmente los registros asignados a la muestra). 
+![SPI_Control_Mapeo](https://user-images.githubusercontent.com/42346359/131919736-5fa2e7a1-381f-472d-ac27-f6eae8ded62c.PNG)
+
+![image](https://user-images.githubusercontent.com/42346359/131919916-3c2372d1-f5ba-42b9-a13d-55d4d770a59c.png)
+
+Arriba se puede ver el control de las posiciones de memoria de todos los registros asociados a la FPGA junto al diagrama que hace posible la concatenanción para la creación de
+la muestra instantanea.
 
 ## Funcionalidad DockerServicios
 
@@ -126,12 +161,343 @@ sudo docker-compose restart
 ```bash
 sudo docker-compose down 
 ```
+* Para mirar las imágenes creadas:
+```bash
+sudo docker images
+```
+
+* Para eliminarlas:
+```bash
+sudo rmi <id/name>
+```
+
+Se eligió montar todos los servicios en contenedores Docker dada la portabilidad.
+### Servicios implementados en Docker
+
+Se tomaron los mismos servicios que Sanches [Sanches] y las mismas configuraciones con algunas excepciones que se van a explicar.
 
 
+#### Docker-compose
 
-### AMD 
+En el curso introductorio del Youtuber [Pelado Nerd](https://www.youtube.com/watch?v=CV_Uf3Dq-EU) sobre docker se comenzó a montar contenedores desde comandos básicos hasta el punto de usar docker compose. Docke-compose hace parte de docker y su principal ventaja radica en organizar los volúmenes, las dependecias, los puertos y demás cosas en un archivo con el nombre *docker-compose.yml*. Sin embargo, la principal característica es que se crea por defecto una red entre los sevicios que se crean con el alias de cada servicio de tal forma que entre ellos pueden resolverse la ip mediante su alias. Por ejemplo en la siguiente sección de código el Broker MQTT tiene la ip en el alias *mosquitto*.
 
-### ARM
+```
+services:
+    mosquitto:
+        image: eclipse-mosquitto:2.0.10
+```
+
+Esto es muy necesario dado que los servicios (o contenedores) pueden cambiar la IP y no se hace práctico en un proyecto dado que generaría fallas de comunicación.
+#### Broker MQTT
+
+Para esto se eligió mosquitto y esta es su configuración en docker compose:
+```
+mosquitto:
+        image: eclipse-mosquitto:2.0.10
+        restart: always
+        ports: 
+            - 1883:1883  
+        volumes:
+            - ./BaseDatos/mosquitto/config:/mosquitto/config
+            - ./BaseDatos/mosquitto/data:/mosquitto/data
+            - ./BaseDatos/mosquitto/log:/mosquitto/log
+    
+```
+
+* image: Se elige una imagen de [Docker Hub](https://hub.docker.com/_/eclipse-mosquitto) con el tag 2.0.10 y se verifica que esté disponible para la arquitectura deseada que en este caso es AMD y ARMv7. 
+
+* restart: restart: always
+
+Esto permite que funcione cada vez que se prende el dispositivo que lo contiene o cada vez que tenga un error.
+
+* Ports: Se mapea el puerto interno del docker :1883 al puerto externo del dispositivo 1883:.
+
+* Volumes: el único que en realidad es importante es la configuración que hay en el archivo mosquitto.config y que se coloca en un archivo local en el mapeo <archivo local>:/mosquitto/config para que cada vez que se reinicialice el docker no se pierda la información. El contenido de dicho archivo es:
+
+```
+listener 1883 0.0.0.0
+allow_anonymous true
+```
+Recomentaciones:
+- Debe recordarse que toda información que se coloque en un docker se va a eliminar y por ende se deben colocar volúmenes para que esta sea persistente. Un error que se tuvo fue el pensar que si se configuraba el archivo desde el interior del contenedor el cambio en el volumen se iba a ver de manera local pero en realidad sucede lo contrario.
+
+#### InfluxDB
+
+Se escoge una base de datos de serie temporal dada la naturaleza de nuestro proyecto.
+
+influxdb:
+        image: influxdb:1.8
+        restart: always
+        ports: 
+            - 8086:8086
+        volumes: 
+            - ./BaseDatos/influxdb_data:/var/lib/influxdb
+        environment: 
+            - INFLUXDB_DB=embebidos
+            - INFLUXDB_ADMIN_USER=admin
+            - INFLUXDB_ADMIN_PASSWORD=admin
+            - INFLUXDB_HTTP_AUTH_ENABLED=true
+
+1. image: influxdb:1.8 se elige esta con el tag en específico y se verifica en [Docker Hub](https://hub.docker.com/_/influxdb) la compatibilidad de arquitecuras. Se eligió otro tag con el objetivo de usar uno más actualizado pero se encontró que no se podía acceder a ella con el método que decía Sanchez y que se expone a continuación:
+
+Para acceder al interior del contenedor se hace así:
+```
+sudo docker exec -it <id/nombre contenedor InfluxDB> bash
+```
+Registrarse con el usuario y contraseñas
+
+```
+influx -username <usuario> -password <contraseña>
+```
+
+Observar las bases de datos creadas
+```
+show databases
+```
+Usar una base de datos:
+
+```
+use <base de datos>
+```
+Mirar las distintas 'tablas' creadas:
+```
+show measurements
+```
+
+Observar todos los resultados de la base de BaseDatos
+```
+select * from <tabla>
+
+```
+Esto fue de ayuda para verificar que se estaban guardando los datos de manera correcta cuando no se tenía una interfaz gráfica. 
+
+2. Se mapeo el puerto :8086 del contenedor al puerto 8086: del dispositivo local.
+
+3. Se guarda la información de la base de datos dentro de la ruta /var/lib/influxdb que está en el contenedor a la ruta local ./BaseDatos/influxdb_data.
+
+4. Se expecifica por medio de variables de entorno propios de esta imagen que la base de datos se llama *embebidos* (INFLUXDB_DB=embebidos), se coloca como usuario y contraseña para *admin* (INFLUXDB_ADMIN_USER=admin, INFLUXDB_ADMIN_PASSWORD=admin) y se habilita la comunicación HTTP (INFLUXDB_HTTP_AUTH_ENABLED=true).
+
+#### telegraf
+Con este servicio se busca enviar toda la información publicada en un tópico registrado a la base de datos influxdB
+```
+telegraf: 
+        image: telegraf:1.18.3
+        restart: always
+        volumes:
+            - ./BaseDatos/telegraf/telegraf.conf:/etc/telegraf/telegraf.conf
+        depends_on: 
+            - influxdb
+    
+```
+1. image: Se busca en [docker hub](https://hub.docker.com/_/telegraf) la imagen compatible con las arquitecturas.
+
+2. volumes:
+            - ./BaseDatos/telegraf/telegraf.conf:/etc/telegraf/telegraf.conf
+
+El archivo de la ruta local ./BaseDatos/telegraf/telegraf.conf se vincula con el archivo dentre del contenedor /etc/telegraf/telegraf.conf y este es su contenido fundamental (lo que no significa la falta de la demás configuración):
+
+```
+[[outputs.influxdb]]
+urls = ["http://influxdb:8086"]
+database = "embebidos"
+skip_database_creation = true
+username = "admin"
+password = "admin"
+```
+* La ip de la base de datos y el puerto está representado por http://influxdb:8086.
+* Se especifica que la base de datos que se va a usar es *embebidos* que debe coincidir con la creada en InfluxDB
+* No se crea nueva base de datos de datos.
+* Se le coloca el mismo usuario y contraseña usados en InfluxDB.
+
+```
+[[inputs.mqtt_consumer]]
+ servers = ["tcp://mosquitto:1883"]
+ topics = ["Embebidos/#"]
+     name_override = "embebidos"
+
+    json_string_fields = [
+      "predictions_0_probability",
+      "predictions_1_probability",
+      "predictions_2_probability",
+      "predictions_3_probability",
+      "predictions_4_probability"
+      ]
+      
+    tag_keys = [
+      "predictions_0_label",
+      "predictions_1_label",
+      "predictions_2_label",
+      "predictions_3_label",
+      "predictions_4_label"
+      ]
+    data_format = "json"
+```
+
+* Se especifica el protocolo de comunicación que este caso es TCP, la dirección ip *mosquitto* y el puerto en que se va a estar publicando información que se debe guardar en influxDB (*1883*).
+
+* Se va a guardar la información que se publique en el tópico *Embebidos/#*
+* Se especifica el nombre de la "tabla" en el que se va a guardar la información (embebidos).
+* Dada la estructura del json que se expuso anteriormente se escoge la información que se va a guardar que en este caso es el label y la probabilidad de ocurrencia asociada con dicho label.
+* Finalmente se especifica que se va a guardar como un json (Se hace distinto que Sanches [Sanches].
+
+Este último tema fue el que más causó dificultades dado que solo se estaban guardando la probabilidades más no los labels asociados. Para esto se buscó en la documentación de telegraf con respecto a los [tipos de datos json](https://github.com/influxdata/telegraf/tree/master/plugins/parsers/json). Se notó que telegraf solo guarda datos que tengan la estructura configurada, esto generó un problema de comprobación en donde no se guardaban los datos y el error era que se debía publicar un json con la estructura que se había establecido.
+
+3.  depends_on: 
+            - influxdb
+
+Se espera hasta que el servicio con nombre influxdb se haya creado para este hacerlo. Esto ayuda a que la base de datos de la configuración ya se haya creado.
+
+#### grafana
+
+Para realizar gráficos con respecto a los datos que se tengan en la base de datos InfluxDB se usa Grafana. 
+```
+grafana: 
+        image: grafana/grafana:7.5.7 
+        restart: always
+        ports:
+            - 3000:3000 
+        volumes:
+            - grafana-storage:/var/lib/grafana  
+        depends_on: 
+            - influxdb
+    
+```
+
+1. image: grafana/grafana:7.5.7
+
+Se busca una imagen compatible con las arquitecturas que se tienen en [Docker Hub](https://hub.docker.com/r/grafana/grafana)
+
+2. Se mapea el puerto :3000 del contenedor al puerto 3000: del dispositivo local.
+
+3. volumes:
+    - grafana-storage:/var/lib/grafana  
+
+Se guarda de manera local en el volumen *grafana-storage* la configuración hecha en el contenedor para graficar los datos que se localiza en su ruta /var/lib/grafana.
+
+4. volumes:
+    grafana-storage:
+        external: false
+
+Se tuvo que crear un volumen *especial* para grafana porque fue la única forma que se encontró para que no se borraran los cambios editados en su interfaz después de varios intentos mediante la forma convencional con la que se venía haciendo.
+
+#### ser_brokerconection
+
+Este fue el servicio que se creo de manera local y cuya estructura varía un poco con respecto a las que se se expusieron.
+```
+    ser_brokerconection:
+        build: ./BrokerMqttPython/BrokerConection
+        restart: always
+        depends_on:
+            - mosquitto
+```
+1. build: ./BrokerMqttPython/BrokerConection
+
+En la dirección relativa *./BrokerMqttPython/BrokerConection* al archivo docker-compose.yml se tiene una archivo Dockerfile que crea una imagen con la siguiente descripción:
+
+```
+FROM python:3.7.3
+
+WORKDIR /usr/src/app
+
+COPY requirements.txt ./
+RUN pip install --no-cache-dir -r requirements.txt
+RUN apt update && apt install -y curl && apt install -y avahi-daemon
+
+COPY . .
+
+CMD ["python3", "./app.py" ]
+```
+a.  FROM python:3.7.3
+
+Se descarga de Docker Hub la imagen python:3.7.3 que corresponde a la misma versión con el que se comprobó el correcto funcionamiento del script *app.py* en la raspberry.
+
+b. Establece el directorio de trabajo como /usr/src/app según la documentación de [Docker Hub](https://hub.docker.com/_/python).
+
+c. COPY requirements.txt ./
+
+Copia el archivo requirements.txt que contiene las librería necesarias para el script *app.py* en el directorio de trabajo dentro del contedor.
+
+d. RUN pip install --no-cache-dir -r requirements.txt
+
+Se instalan las librerías que están en requirements.txt.
+
+e. RUN apt update && apt install -y curl && apt install -y avahi-daemon
+
+Se instala curl y avahi-daemon necesarios para el funcionamiento *app.py* (avahi-daemon no reconoció la ip de un dispositivo externo al que contenía el docker).
+
+f. COPY . .
+
+Se copia todo lo que hay en el directorio actual dentro del directorio de trabajo del Docker (excepto lo que está en .dockerignore).
+
+e. CMD ["python3", "./app.py" ]
+
+Se ejecuta dentro del contenedor el comando ```python3 app.py``` por defecto.
+
+2. Se reinicia siempre y se crea después del servicio moquitto.
+
+#### docker-compose final 
+
+Uniendo todos los servicios en un docker-compose.yml se tiene el siquiente archivo:
+
+```
+version: '3.1'
+
+services:
+    mosquitto:
+        image: eclipse-mosquitto:2.0.10
+        restart: always
+        ports: 
+            - 1883:1883  
+        volumes:
+            - ./BaseDatos/mosquitto/config:/mosquitto/config
+            - ./BaseDatos/mosquitto/data:/mosquitto/data
+            - ./BaseDatos/mosquitto/log:/mosquitto/log
+    
+    telegraf: 
+        image: telegraf:1.18.3
+        restart: always
+        volumes:
+            - ./BaseDatos/telegraf/telegraf.conf:/etc/telegraf/telegraf.conf
+        depends_on: 
+            - influxdb
+    
+
+    
+    influxdb:
+        image: influxdb:1.8
+        restart: always
+        ports: 
+            - 8086:8086
+        volumes: 
+            - ./BaseDatos/influxdb_data:/var/lib/influxdb
+        environment: 
+            - INFLUXDB_DB=embebidos
+            - INFLUXDB_ADMIN_USER=admin
+            - INFLUXDB_ADMIN_PASSWORD=admin
+            - INFLUXDB_HTTP_AUTH_ENABLED=true
+            
+    grafana: 
+        image: grafana/grafana:7.5.7 
+        restart: always
+        ports:
+            - 3000:3000 
+        volumes:
+            - grafana-storage:/var/lib/grafana  
+        depends_on: 
+            - influxdb
+           
+    ser_brokerconection:
+        build: ./BrokerMqttPython/BrokerConection
+        restart: always
+        depends_on:
+            - mosquitto
+
+
+volumes:
+    grafana-storage:
+        external: false
+```
+
 
 
 ### FRONT END
@@ -193,7 +559,20 @@ Para el main se uso un contenedor que cotiene una imagen con una frase y adicion
 
  ![Screenshot from 2021-09-02 09-44-24](https://user-images.githubusercontent.com/55359032/131864814-60d85911-37fd-4eb9-9a98-00abbdd86d8e.png)
         
-        
+ Ahora este Widget resume todo el funcionamiento principal del backend. Primero tenemos una aplicacion de Python la cual cuenta con la libreria mas importante para la lectura de datos desde la base de datos influxDB (INFLUXDB). Esta libreria nos permite crear un cliente y  conectarnos a la base de datos, para posteriormente usar la funcion .query para hacer solicitudes tipo "SQL". 
+
+```bash 
+        client = influxdb.InfluxDBClient(host='192.168.1.86', port=8086, ....)
+        Lecturas_2 = client.query(f"SELECT * FROM embebidos WHERE time > now()-14d")
+```
+De esta manera se crea un archivo json que posteriomente nos permite usar Node.js junto con algunos paquetes como  EXPRESS, CORS y FS. Estas librerias primero como EXPRESS sirven para montar servicios para hacer solicitudes APIS , CORS soluciona un problema de comunicacion entre HTTPS y HTTP. Finalmente FS nos ayuda a leer los json. Finalmente con ayuda de FETCH se hace la solicitud desde la pagina web y mediante el metodo .then() podemos enviar los resultados retornados por FETCH a alguna funcion para de esta manera analizar y modificar el widget en cuestion.
+ 
+```bash 
+     fetch('http://localhost:1500')
+    .then(response => response.json())
+    .then(data => printIt(data));
+```
+ 
 
 ## Bibliografia
 Recursos adicionales
@@ -202,3 +581,11 @@ Recursos adicionales
 * Inteligencia Artificial que clasifica los sonidos: https://www.google.com/url?q=https://github.com/IBM/MAX-Audio-Classifier&sa=D&source=editors&ust=1630442220276000&usg=AOvVaw06XKVdFrBWjtAnfdxmKH8F 
 * Documentacion Espressif del ESP32: https://docs.espressif.com/projects/esp-idf/en/latest/esp32/index.html
 * Datasheet del Microfono INMP441: https://www.google.com/url?q=https://invensense.tdk.com/wp-content/uploads/2015/02/INMP441.pdf&sa=D&source=editors&ust=1630447016673000&usg=AOvVaw1flXUa5FAnurC2niqlp07R
+*  Documentacion SPI y Icestudio: https://github.com/Obijuan/Cuadernos-tecnicos-FPGAs-libres/wiki/CT.5:-SPI-esclavo
+
+
+* [Sanches] J. J. Sánchez Hernández, «IoT Dashboard - Sensores, MQTT, Telegraf, InfluxDB y Grafana». may 20, 2021. [En línea]. Disponible en: http://josejuansanchez.org/iot-dashboard/
+
+
+* «Docker Hub». https://hub.docker.com/ (accedido sep. 02, 2021).
+Pelado Nerd, DOCKER 2021 - De NOVATO a PRO! (CURSO COMPLETO), (2021). Accedido: sep. 02, 2021. [En línea Video]. Disponible en: https://www.youtube.com/watch?v=CV_Uf3Dq-EU
