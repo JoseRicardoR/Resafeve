@@ -156,6 +156,22 @@ sudo docker-compose down
 ### ARM
 
 
+### INTELIGENCIA ARTIFICIAL
+
+La inteligencia artificial que se uso es la una inteligencia diseñada por IBM con libreis como keras o tensor flow y se entreno con un dataset de goole disponibe en https://research.google.com/audioset/ontology/index.html. Y como ya se menciono antes la documentacion de esta se encuentra en el siguiente github https://github.com/IBM/MAX-Audio-Classifier. Pero en el caso particular de nuestro proyecto hay que hacer algunas aclaracioes.
+
+Como el sonido que se quiere detectar es el de una motosierra, se hizo el analisis de varios sonidos de motosierra y se obtuvo que la mayoria de las prediciones no son exactamente motosierrta("Chainsaw") sino algunas otras etiquetas de sonidos con motores similares. Es de esta manera como obtuvimos una lista de etiquetas que como el ambiente donde estara sera un ambiente totalmente natural es extraño percibir alguno de estos sonidos.
+
+* Medium engine (mid frequency)
+* Vehicle
+* Motorcycle
+* Chainsaw
+* Engine
+* Electric toothbrush
+* Pump (liquid)
+
+Todos los anteriores labels son extraños en un ambiente natural y por eso seran tomados como positivos para alarmar el sistema. Por otro lado la inteligencia artificial tiene un minimo de requisitos y ademas tiene una arquitectura diferente a la de Raspberry, por este motivo se tomo la decision de instalar tal servicio en un computador local de uno de los compañeros mediante el proceso de instalacion de la imagen de docker especificado en la documentacion de esta misma.
+
 ### FRONT END
 Para el front end(Interfaz hombre maquina) se realizo una pagina web que hace uso de lenguaje HTML, JAVASCRIPT, NODE.js, CSS y PYTHON para su funcionamiento como diseño. Particularmente NODE.js y PYTHON se uso para parte del backend que principalmente es la lectura de la base de datos INFLUXDB. Para hacer una descripcion de cada partede la pagina clara y consisa dividio la pagina en "Encabezado" y "Main".
 
