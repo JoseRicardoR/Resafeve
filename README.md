@@ -96,6 +96,12 @@ El archivo definitivo tiene el nombre de ESP32_audio_receiver.py, y la explicaci
 
 
 ### FreeRTOS
+Se implemento un unico task con FreeRTOS que lee la señal del microfono I2S y publica en mqtt.
+
+### Alimentación
+Encontramos dos opciones de alimentación:
+![Alimentación con paneles solares](https://i2.wp.com/randomnerdtutorials.com/wp-content/uploads/2019/05/esp8266-solar-powered-f.png?resize=1024%2C505&quality=100&strip=all&ssl=1)
+![Alimentación con pila de litio CR123](https://i.imgur.com/mDv02r9.jpg)
 
 ## Funcionalidad de la FPGA
 
