@@ -97,6 +97,41 @@ El archivo definitivo tiene el nombre de ESP32_audio_receiver.py, y la explicaci
 
 ### FreeRTOS
 
+## Funcionalidad de la FPGA
+
+La tarjeta FPGA usada para este proyecto es la Blackice II. Este dispositivo cuenta con la posibilidad de ser programado mediante un entorno grafico llamado
+Icestudio mediante bloques que representan los modulos que normalmente se insatancian al ser usado un lenguaje de descripción de hardware convencional
+(Verilog o VHDL).
+![Blackice II](https://user-images.githubusercontent.com/42346359/131914705-aa9a34cd-44ce-4965-8141-9e75d155edac.jpg)
+
+### Tareas
+La tarea principal a realizar por la FPGA en este proyecto consiste en la deteccion de audios validos que puedan ser analizados por medio de una inteligencia artificial,
+esto con el fin de no saturarla con muchas peticiones procedentes de varios microfonos. Para que un audio se considere como valido, un porcentaje arbitrario de las
+muestras que conforman una grabación (este porcentaje es determinado por el diseñador), deberá superar un umbral de intensidad (tambien establecido por el diseñador),
+esto con el fin de determinar que el audio en efecto si puede contener información relevante y no es simplemente silencio o ruido intermitente.
+
+Como ya se mencionó el ESP32 enviará la información referente a la Raspberry por medio de un servidor MQTT. Esta información será enviada a la FPGA por medio de un protocolo
+de comunicacion serial (SPI), para su analisis y posterior devolución de resultados. En esta aplicacion la Raspberry sera el denominado "Maestro" y la FPGA el "esclavo" debido
+a como se realizan las solicitudes y quien es quien necesita enviar los comandos para la correcta operación del modulo.
+
+![Maestro_Esclavo](https://user-images.githubusercontent.com/42346359/131917107-d548e8ba-ecaf-44e4-b512-ff519bc68c69.PNG)
+
+Para esta implementación se hara uso del bloque esclavo presente en una de las librerias de Icestudio.
+
+
+![Bloque_esclavo](https://user-images.githubusercontent.com/42346359/131917700-eeedaf32-6fe0-4fb4-bad7-48f44ca58fde.PNG)
+
+
+Cada muestra de audio es representada por 2 Bytes de datos (16 bits), Sin embargo el bus de datos de este modulo es de 8 bits (que son recibidos serialmente desde el 
+maestro y organizados en un registro propio del modulo). Por tanto se asignara 2 posiciones de memoria (2 registros de 8 bits mapeados en derterminadas direcciones de memoria),
+a una muestra de audio en un instante. Para el envio de esta señal a la FPGA se cuenta con el bloque "SPI-cmd-regs" que se encargara de primero apuntar a la dirección de
+alguno de los registros de la muestra instantanea y luego escribir el dato designado por el maestro, tambien es posible leer este dato en caso de que se requiera hacer alguna comparación (notese que se requerirá hacer dos veces este proceso para llenar totalmente los registros asignados a la muestra). 
+![SPI_Control_Mapeo](https://user-images.githubusercontent.com/42346359/131919736-5fa2e7a1-381f-472d-ac27-f6eae8ded62c.PNG)
+
+![image](https://user-images.githubusercontent.com/42346359/131919916-3c2372d1-f5ba-42b9-a13d-55d4d770a59c.png)
+
+Arriba se puede ver el control de las posiciones de memoria de todos los registros asociados a la FPGA junto al diagrama que hace posible la concatenanción para la creación de
+la muestra instantanea.
 
 ## Funcionalidad DockerServicios
 
@@ -215,3 +250,4 @@ Recursos adicionales
 * Inteligencia Artificial que clasifica los sonidos: https://www.google.com/url?q=https://github.com/IBM/MAX-Audio-Classifier&sa=D&source=editors&ust=1630442220276000&usg=AOvVaw06XKVdFrBWjtAnfdxmKH8F 
 * Documentacion Espressif del ESP32: https://docs.espressif.com/projects/esp-idf/en/latest/esp32/index.html
 * Datasheet del Microfono INMP441: https://www.google.com/url?q=https://invensense.tdk.com/wp-content/uploads/2015/02/INMP441.pdf&sa=D&source=editors&ust=1630447016673000&usg=AOvVaw1flXUa5FAnurC2niqlp07R
+*  Documentacion SPI y Icestudio: https://github.com/Obijuan/Cuadernos-tecnicos-FPGAs-libres/wiki/CT.5:-SPI-esclavo
