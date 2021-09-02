@@ -1,0 +1,425 @@
+import paho.mqtt.client as mqtt  # Libreria MQTT
+
+import os
+
+# ... Archivo encendido...
+
+print("Receptor de audio encendido")
+
+
+
+# .............. SETUP Constants........................
+
+broker_address="localhost"
+
+port=1883
+
+sub_topic = "ESP32/Data_output"
+
+pub_topic = "ESP32/Signal_input"
+
+# Variables globales
+
+samplerate = 16000  # Frecuencia de muestreo
+
+t = 6  # tiempo total en segundos
+
+buffersize = 24000  # numero de bytes en cada paquete recibido
+
+resolution = 16   #resolucion en bits
+
+recordsize = samplerate * resolution / 8 * t
+
+# n_pack = (fs*16bits*t/2)/buffersize
+
+packet_number = round((recordsize/buffersize) + 0.49)
+
+num_mess = 0                    # numero de mensajes recibidos
+
+AudioListo = False             # booleano que indica si el audio ya puede ser enviado a la IA
+
+Escribiendo = False            # boolenao que indica si se esta escribiendo el audio en este momento
+
+# ..............................................................
+
+
+
+# .......... .wav Setup.....................................
+
+filename = "Audio.wav"  # nombre del archivo de audio
+
+f = open(filename, 'wb')   # se crea el archivo de audio, wb = write-bytes
+
+
+
+header = bytearray(b'\x01') * 44
+
+header[0] = 0x52
+
+header[1] = 0x49
+
+header[2] = 0x46
+
+header[3] = 0x46
+
+fileSize = int(recordsize + 44 - 8)
+
+byte_filesize = fileSize.to_bytes(4,'little')
+
+header[4] = byte_filesize[0]  # Audio size..
+
+header[5] = byte_filesize[1]
+
+header[6] = byte_filesize[2]
+
+header[7] = byte_filesize[3]  # ..
+
+header[8] = 0x57
+
+header[9] = 0x41
+
+header[10] = 0x56
+
+header[11] = 0x45
+
+header[12] = 0x66
+
+header[13] = 0x6D
+
+header[14] = 0x74
+
+header[15] = 0x20
+
+header[16] = 0x10  # Resolucion en bits..
+
+header[17] = 0x00
+
+header[18] = 0x00
+
+header[19] = 0x00  # ..
+
+header[20] = 0x01  # Audio format= 1(PCM) ..
+
+header[21] = 0x00  # ..
+
+header[22] = 0x01  # numero de canales ..
+
+header[23] = 0x00  # ..
+
+header[24] = 0x80  # Samplerate ..
+
+header[25] = 0x3E
+
+header[26] = 0x00
+
+header[27] = 0x00  # ..
+
+header[28] = 0x00  # Byte Rate .. SampleRate * NumChannels * BitsPerSample/8
+
+header[29] = 0x7D
+
+header[30] = 0x00
+
+header[31] = 0x00  # ..
+
+byte_blockalign = ( int(resolution/8) ).to_bytes(2,'little') 
+
+header[32] = byte_blockalign[0]  # Block align .. NumChannels * BitsPerSample/8
+
+header[33] = byte_blockalign[1]
+
+byte_resolution = (resolution).to_bytes(2,'little')
+
+header[34] = byte_resolution[0] # BitsPerSample = resolution
+
+header[35] = byte_resolution[1]  # ..
+
+header[36] = 0x64
+
+header[37] = 0x61
+
+header[38] = 0x74
+
+header[39] = 0x61
+
+byte_recordsize = int(recordsize).to_bytes(4,'little')
+
+header[40] = byte_recordsize[0]  # Audio size..
+
+header[41] = byte_recordsize[1]
+
+header[42] = byte_recordsize[2]
+
+header[43] = byte_recordsize[3]  # ..
+
+
+
+### funciones Para mandar a la AI
+
+def publish(broker_address,port,topico,mensaje):
+
+        '''
+
+        Esta función permite publicar en un broker mqtt
+
+        - broker_address: IP donde se escuche el broker mqtt
+
+        - port: Puerto expuesto para el broker mqtt
+
+        - topico: tópico al que se quiere publicar
+
+        - mensaje: mensaje para publicar en el tópico
+
+        '''
+
+        try:
+
+            client = mqtt.Client("P1") #create new instance
+
+            client.connect(broker_address,port) #connect to broker
+
+            client.publish(topico,mensaje)#publish
+
+        except ConnectionRefusedError:
+
+            print(f'Por favor, revise la conexión del broker en {broker_address}:{port}')
+
+        return
+
+    
+
+
+
+def procesar(direccionSamples,AI_puerto,AI_address,archivoResultados):
+
+    '''
+
+    Esta funcíon permite mandar una orden a la linea de comandos
+
+    direccionSamples: Dirección relativa de las muestras con la extensión .wav
+
+    puerto: Puerto expuesto para el MAX-Audio-Classifier 
+
+    archivoResultados: Es el archivo que guarda los resultados con la extensión .json(Puede ser otra)
+
+    '''    
+
+
+
+    os.system(f'curl -F "audio=@{direccionSamples};type=audio/wav" -XPOST \
+
+        http://{AI_address}:{AI_puerto}/model/predict > {archivoResultados}')
+
+    # Comando tomado de: https://githubimport paho.mqtt.client as mqtt  # Libreria MQTT
+
+import os
+
+# ... Archivo encendido...
+
+print("Receptor de audio encendido")
+
+
+
+# .............. SETUP Constants........................
+
+broker_address="localhost"
+
+port=1883
+
+sub_topic = "ESP32/Data_output"
+
+pub_topic = "ESP32/Signal_input"
+
+# Variables globales
+
+samplerate = 16000  # Frecuencia de muestreo
+
+t = 6  # tiempo total en segundos
+
+buffersize = 24000  # numero de bytes en cada paquete recibido
+
+resolution = 16   #resolucion en bits
+
+recordsize = samplerate * resolution / 8 * t
+
+# n_pack = (fs*16bits*t/2)/buffersize
+
+packet_number = round((recordsize/buffersize) + 0.49)
+
+num_mess = 0                    # numero de mensajes recibidos
+
+AudioListo = False             # booleano que indica si el audio ya puede ser enviado a la IA
+
+Escribiendo = False            # boolenao que indica si se esta escribiendo el audio en este momento
+
+# ..............................................................
+
+
+
+# .......... .wav Setup.....................................
+
+filename = "Audio.wav"  # nombre del archivo de audio
+
+f = open(filename, 'wb')   # se crea el archivo de audio, wb = write-bytes
+
+
+
+header = bytearray(b'\x01') * 44
+
+header[0] = 0x52
+
+header[1] = 0x49
+
+header[2] = 0x46
+
+header[3] = 0x46
+
+fileSize = int(recordsize + 44 - 8)
+
+byte_filesize = fileSize.to_bytes(4,'little')
+
+header[4] = byte_filesize[0]  # Audio size..
+
+header[5] = byte_filesize[1]
+
+header[6] = byte_filesize[2]
+
+header[7] = byte_filesize[3]  # ..
+
+header[8] = 0x57
+
+header[9] = 0x41
+
+header[10] = 0x56
+
+header[11] = 0x45
+
+header[12] = 0x66
+
+header[13] = 0x6D
+
+header[14] = 0x74
+
+header[15] = 0x20
+
+header[16] = 0x10  # Resolucion en bits..
+
+header[17] = 0x00
+
+header[18] = 0x00
+
+header[19] = 0x00  # ..
+
+header[20] = 0x01  # Audio format= 1(PCM) ..
+
+header[21] = 0x00  # ..
+
+header[22] = 0x01  # numero de canales ..
+
+header[23] = 0x00  # ..
+
+header[24] = 0x80  # Samplerate ..
+
+header[25] = 0x3E
+
+header[26] = 0x00
+
+header[27] = 0x00  # ..
+
+header[28] = 0x00  # Byte Rate .. SampleRate * NumChannels * BitsPerSample/8
+
+header[29] = 0x7D
+
+header[30] = 0x00
+
+header[31] = 0x00  # ..
+
+byte_blockalign = ( int(resolution/8) ).to_bytes(2,'little') 
+
+header[32] = byte_blockalign[0]  # Block align .. NumChannels * BitsPerSample/8
+
+header[33] = byte_blockalign[1]
+
+byte_resolution = (resolution).to_bytes(2,'little')
+
+header[34] = byte_resolution[0] # BitsPerSample = resolution
+
+header[35] = byte_resolution[1]  # ..
+
+header[36] = 0x64
+
+header[37] = 0x61
+
+header[38] = 0x74
+
+header[39] = 0x61
+
+byte_recordsize = int(recordsize).to_bytes(4,'little')
+
+header[40] = byte_recordsize[0]  # Audio size..
+
+header[41] = byte_recordsize[1]
+
+header[42] = byte_recordsize[2]
+
+header[43] = byte_recordsize[3]  # ..
+
+
+
+### funciones Para mandar a la AI
+
+def publish(broker_address,port,topico,mensaje):
+
+        '''
+
+        Esta función permite publicar en un broker mqtt
+
+        - broker_address: IP donde se escuche el broker mqtt
+
+        - port: Puerto expuesto para el broker mqtt
+
+        - topico: tópico al que se quiere publicar
+
+        - mensaje: mensaje para publicar en el tópico
+
+        '''
+
+        try:
+
+            client = mqtt.Client("P1") #create new instance
+
+            client.connect(broker_address,port) #connect to broker
+
+            client.publish(topico,mensaje)#publish
+
+        except ConnectionRefusedError:
+
+            print(f'Por favor, revise la conexión del broker en {broker_address}:{port}')
+
+        return
+
+    
+
+
+
+def procesar(direccionSamples,AI_puerto,AI_address,archivoResultados):
+
+    '''
+
+    Esta funcíon permite mandar una orden a la linea de comandos
+
+    direccionSamples: Dirección relativa de las muestras con la extensión .wav
+
+    puerto: Puerto expuesto para el MAX-Audio-Classifier 
+
+    archivoResultados: Es el archivo que guarda los resultados con la extensión .json(Puede ser otra)
+
+    '''    
+
+
+
+    os.system(f'curl -F "audio=@{direccionSamples};type=audio/wav" -XPOST \
+
+        http://{AI_address}:{AI_puerto}/model/predict > {archivoResultados}')
+
+    # Comando tomado de: https://github

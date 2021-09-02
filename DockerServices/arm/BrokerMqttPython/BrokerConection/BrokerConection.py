@@ -57,34 +57,34 @@ if __name__=="__main__":
     #Instanciamiento
     tool=Tool() 
     #ip del broker mqtt
-    broker_address="mosquitto"
+    broker_address="localhost"
     #broker_address=AI_address="localhost"
     #Puerto Expuesto del broker
     port=1883
     #Topico al que se desea publicar
-    topico="Esteban/Docker"
+    topico="Embebidos/Local"
     #Periodo de espera .wav
     tiempoEspera=3
     #Archivo para guardar los resultados de la inteligencia artificial (AI)
     archivoResultados='resultados.json'
     #Dirección relativa de la muestra que se quiere analiza con la AI
-    #direccionSamples='samples/audio.wav'
+    direccionSamples='Audio.wav'
     #Puerto que expone la aplicación de la AI
-    #AI_puerto=5000
+    AI_puerto=5000
     #Dirección de AI
-    #AI_address="192.168.0.106"
+    AI_address="mateo-HP-Notebook.local"
     #AI_address="localhost"
     # Se inicializa el mensaje de publicación en el broker mqtt
-    mensaje=''
+    #mensaje=''
 
 
     while True:
     # Ciclo infinito de análisis
     #while True:
         
-        #tool.procesar(direccionSamples,AI_puerto,AI_address,archivoResultados)
+        tool.procesar(direccionSamples,AI_puerto,AI_address,archivoResultados)
         mensaje=tool.leer(archivoResultados)
-        tool.publish(broker_address,port,topico,f'"{mensaje}"')
+        tool.publish(broker_address,port,topico,mensaje)
         time.sleep(tiempoEspera)
 
 
