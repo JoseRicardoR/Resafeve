@@ -185,8 +185,15 @@ Que como vemos en la maqueta de HTML al presionar "Documentacion" nos redireccio
 } 
         
 ```
+Hay algunos otros elementos y utilidades de CSS que son interensantes, como el HOVER que nos permite interactuar con los elementos, como ponerlos opacos o cambiarlos de color. Esto hace la experiencia de usuario mucho mas amena.
         
+###MAIN
+        
+Para el main se uso un contenedor que cotiene una imagen con una frase y adicionalmente tiene algunos widgets para la visualizacion de la informacion obtenida a su vez con la base de datos. Para el primer widget se uso programó un reloj con fecha mediate el usod de variables propias de javascript Date() y mediante a una iteracion se actuliza la fecha y la hora por cada intervalo de tiempo. Adicionalmente se programo un indicador de alamrma basado en la ultima lectura de la base de datos y algunos criterios que se especificaran posteriormente. Este widget cambiara su color y su texto dependiendo del dato almacenado en por el analisis de la inteligencia artificial.
 
+ ![Screenshot from 2021-09-02 09-44-24](https://user-images.githubusercontent.com/55359032/131864814-60d85911-37fd-4eb9-9a98-00abbdd86d8e.png)
+        
+        
 
 ## Bibliografia
 Recursos adicionales
