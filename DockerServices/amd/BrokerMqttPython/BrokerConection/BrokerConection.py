@@ -68,7 +68,7 @@ if __name__=="__main__":
     #Archivo para guardar los resultados de la inteligencia artificial (AI)
     archivoResultados='resultados.json'
     #Dirección relativa de la muestra que se quiere analiza con la AI
-    direccionSamples='samples/audio.wav'
+    direccionSamples='samples/RepetibilidadAudio1.wav'
     #Puerto que expone la aplicación de la AI
     AI_puerto=5000
     #Dirección de AI
@@ -76,16 +76,18 @@ if __name__=="__main__":
     #AI_address="localhost"
     # Se inicializa el mensaje de publicación en el broker mqtt
     mensaje=''
+    contador=1
 
-
-    while True:
+    while contador<=10:
     # Ciclo infinito de análisis
     #while True:
-        
+        direccionSamples=f'Samples/RepetibilidadAudio{contador}.wav'
         tool.procesar(direccionSamples,AI_puerto,AI_address,archivoResultados)
         mensaje=tool.leer(archivoResultados)
         tool.publish(broker_address,port,topico,f'"{mensaje}"')
         time.sleep(tiempoEspera)
+
+        contador+=1
 
 
 
