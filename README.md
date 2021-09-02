@@ -199,8 +199,14 @@ Para el main se uso un contenedor que cotiene una imagen con una frase y adicion
         client = influxdb.InfluxDBClient(host='192.168.1.86', port=8086, ....)
         Lecturas_2 = client.query(f"SELECT * FROM embebidos WHERE time > now()-14d")
 ```
-De esta manera se crea un archivo json que posteriomente nos permite usar Node.js junto con algunos paquetes como  EXPRESS, CORS y FS. Estas librerias primero como EXPRESS sirven para montar servicios para hacer solicitudes APIS , CORS soluciona un problema de comunicacion entre HTTPS y HTTP. Finalmente FS nos ayuda a leer los json.     
-
+De esta manera se crea un archivo json que posteriomente nos permite usar Node.js junto con algunos paquetes como  EXPRESS, CORS y FS. Estas librerias primero como EXPRESS sirven para montar servicios para hacer solicitudes APIS , CORS soluciona un problema de comunicacion entre HTTPS y HTTP. Finalmente FS nos ayuda a leer los json. Finalmente con ayuda de FETCH se hace la solicitud desde la pagina web y mediante el metodo .then() podemos enviar los resultados retornados por FETCH a alguna funcion para de esta manera analizar y modificar el widget en cuestion.
+ 
+```bash 
+     fetch('http://localhost:1500')
+    .then(response => response.json())
+    .then(data => printIt(data));
+```
+ 
 
 ## Bibliografia
 Recursos adicionales
