@@ -1,0 +1,4 @@
+# created by virtualenv automatically
+.vscode
+BaseDatos/influxdb_data
+

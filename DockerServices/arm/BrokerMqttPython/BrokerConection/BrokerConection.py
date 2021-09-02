@@ -57,14 +57,14 @@ if __name__=="__main__":
     #Instanciamiento
     tool=Tool() 
     #ip del broker mqtt
-    broker_address="localhost"
+    broker_address="mosquitto"
     #broker_address=AI_address="localhost"
     #Puerto Expuesto del broker
     port=1883
     #Topico al que se desea publicar
-    topico="Esteban/IA"
+    topico="Esteban/Docker"
     #Periodo de espera .wav
-    tiempoEspera=1
+    tiempoEspera=3
     #Archivo para guardar los resultados de la inteligencia artificial (AI)
     archivoResultados='resultados.json'
     #Dirección relativa de la muestra que se quiere analiza con la AI
