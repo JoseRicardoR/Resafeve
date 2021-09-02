@@ -160,6 +160,29 @@ nav class="navbar">
     </nav>
 ```
 
+En el anterior codigo vemos varios elementos <a> que hacen referencia a los "Links" a otras paginas. Para este caso tenemos los siguientes botones.  
+        
+Que como vemos en la maqueta de HTML al presionar "Documentacion" nos redirecciona al github del proyecto mientras que al presionar Monitorear nos direcciona a Grafana a un Dashboard. Ademas de estos elementos tenemos el titulos de la pagina que tiene un estilo particular ya que se le agrego un degrade en la hoja de estilos. Ademas para el "icono" se uso un script prestado por la pagina https://fontawesome.com/, donde al registrarse y poner la etiqueta del script que nos dan para nuestra cuenta ya con solo hacer referencia a la clase "fab fa-pagelines" de la imagen esta aparece en el elemento deseado.
+ 
+```bash    
+        
+ #navbar_logo {
+    background-color: #0a8124;
+    background-image: linear-gradient(to bottom, #19e946 0%, #00a524 100%);
+    background-size: 100%;
+    -webkit-background-clip: text;
+    -moz-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    -moz-text-fill-color: transparent;
+    display: flex;
+    cursor: pointer;
+    text-decoration: none;
+    font-size: 2rem;
+} 
+        
+```
+        
+
 
 ## Bibliografia
 Recursos adicionales
