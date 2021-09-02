@@ -170,7 +170,40 @@ Como el sonido que se quiere detectar es el de una motosierra, se hizo el analis
 * Electric toothbrush
 * Pump (liquid)
 
-Todos los anteriores labels son extraños en un ambiente natural y por eso seran tomados como positivos para alarmar el sistema. Por otro lado la inteligencia artificial tiene un minimo de requisitos y ademas tiene una arquitectura diferente a la de Raspberry, por este motivo se tomo la decision de instalar tal servicio en un computador local de uno de los compañeros mediante el proceso de instalacion de la imagen de docker especificado en la documentacion de esta misma.
+Todos los anteriores labels son extraños en un ambiente natural y por eso seran tomados como positivos para alarmar el sistema. Por otro lado la inteligencia artificial tiene un minimo de requisitos y ademas tiene una arquitectura diferente a la de Raspberry, por este motivo se tomo la decision de instalar tal servicio en un computador local de uno de los compañeros mediante el proceso de instalacion de la imagen de docker especificado en la documentacion de esta misma. A modo de ejemplo se expondra el json que retorna la IA para tener idea del comportamiento de  este.
+
+```bash
+{
+    "status": "ok",
+    "predictions": [
+        {
+            "label_id": "/m/06mb1",
+            "label": "Rain",
+            "probability": 0.7376469373703003
+        },
+        {
+            "label_id": "/m/0ngt1",
+            "label": "Thunder",
+            "probability": 0.60517817735672
+        },
+        {
+            "label_id": "/t/dd00038",
+            "label": "Rain on surface",
+            "probability": 0.5905200839042664
+        },
+        {
+            "label_id": "/m/0jb2l",
+            "label": "Thunderstorm",
+            "probability": 0.5793699026107788
+        },
+        {
+            "label_id": "/m/07yv9",
+            "label": "Vehicle",
+            "probability": 0.34878015518188477
+        }
+    ]
+}
+```
 
 ### FRONT END
 Para el front end(Interfaz hombre maquina) se realizo una pagina web que hace uso de lenguaje HTML, JAVASCRIPT, NODE.js, CSS y PYTHON para su funcionamiento como diseño. Particularmente NODE.js y PYTHON se uso para parte del backend que principalmente es la lectura de la base de datos INFLUXDB. Para hacer una descripcion de cada partede la pagina clara y consisa dividio la pagina en "Encabezado" y "Main".
