@@ -193,7 +193,14 @@ Para el main se uso un contenedor que cotiene una imagen con una frase y adicion
 
  ![Screenshot from 2021-09-02 09-44-24](https://user-images.githubusercontent.com/55359032/131864814-60d85911-37fd-4eb9-9a98-00abbdd86d8e.png)
         
-        
+ Ahora este Widget resume todo el funcionamiento principal del backend. Primero tenemos una aplicacion de Python la cual cuenta con la libreria mas importante para la lectura de datos desde la base de datos influxDB (INFLUXDB). Esta libreria nos permite crear un cliente y  conectarnos a la base de datos, para posteriormente usar la funcion .query para hacer solicitudes tipo "SQL". 
+
+```bash 
+        client = influxdb.InfluxDBClient(host='192.168.1.86', port=8086, ....)
+        Lecturas_2 = client.query(f"SELECT * FROM embebidos WHERE time > now()-14d")
+```
+De esta manera se crea un archivo json que posteriomente nos permite usar Node.js junto con algunos paquetes como  EXPRESS, CORS y FS. Estas librerias primero como EXPRESS sirven para montar servicios para hacer solicitudes APIS , CORS soluciona un problema de comunicacion entre HTTPS y HTTP. Finalmente FS nos ayuda a leer los json.     
+
 
 ## Bibliografia
 Recursos adicionales
