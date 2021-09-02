@@ -134,6 +134,66 @@ sudo docker-compose down
 ### ARM
 
 
+### FRONT END
+Para el front end(Interfaz hombre maquina) se realizo una pagina web que hace uso de lenguaje HTML, JAVASCRIPT, NODE.js, CSS y PYTHON para su funcionamiento como diseño. Particularmente NODE.js y PYTHON se uso para parte del backend que principalmente es la lectura de la base de datos INFLUXDB. Para hacer una descripcion de cada partede la pagina clara y consisa dividio la pagina en "Encabezado" y "Main".
+
+###ENCABEZADO
+Para el encabezado se siguio la siguiente maqueta de HTML.
+```bash
+nav class="navbar">
+        <div class="navbar_container">
+            <a href="/" class="" id="navbar_logo"><i class="fab fa-pagelines"></i>Resafeve</a>
+        </div>
+        <div class="navbar_containerlinks">
+            <ul class="navbar_menu">
+                <li class="navbar_items">
+                    <a href="https://github.com/esteban11519/SistemasEmbebidos" class="navbar_links">Documentacion</a>
+                </li>
+                <li class="navbar_items">
+                    <a href="/" class="navbar_links">Equipo</a>
+                </li>
+                <li class="navbar_button">
+                    <a href="http://192.168.1.86:3000/d/MZVyWBmRk/embebidos?from=1629944777057&to=1630549577057&orgId=1" class="button">Monitorear</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+```
+
+En el anterior codigo vemos varios elementos <a> que hacen referencia a los "Links" a otras paginas. Para este caso tenemos los siguientes botones. 
+  
+![Screenshot from 2021-09-02 09-09-01](https://user-images.githubusercontent.com/55359032/131862028-b4d13deb-9292-4983-9d54-55efb4f82829.png)
+        
+Que como vemos en la maqueta de HTML al presionar "Documentacion" nos redirecciona al github del proyecto mientras que al presionar Monitorear nos direcciona a Grafana a un Dashboard. Ademas de estos elementos tenemos el titulos de la pagina que tiene un estilo particular ya que se le agrego un degrade en la hoja de estilos. Ademas para el "icono" se uso un script prestado por la pagina https://fontawesome.com/, donde al registrarse y poner la etiqueta del script que nos dan para nuestra cuenta ya con solo hacer referencia a la clase "fab fa-pagelines" de la imagen esta aparece en el elemento deseado.
+       
+![Screenshot from 2021-09-02 09-33-40](https://user-images.githubusercontent.com/55359032/131862928-ac8917b4-a6de-4273-8974-699d427a4d28.png)
+ 
+```bash    
+        
+ #navbar_logo {
+    background-color: #0a8124;
+    background-image: linear-gradient(to bottom, #19e946 0%, #00a524 100%);
+    background-size: 100%;
+    -webkit-background-clip: text;
+    -moz-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    -moz-text-fill-color: transparent;
+    display: flex;
+    cursor: pointer;
+    text-decoration: none;
+    font-size: 2rem;
+} 
+        
+```
+Hay algunos otros elementos y utilidades de CSS que son interensantes, como el HOVER que nos permite interactuar con los elementos, como ponerlos opacos o cambiarlos de color. Esto hace la experiencia de usuario mucho mas amena.
+        
+###MAIN
+        
+Para el main se uso un contenedor que cotiene una imagen con una frase y adicionalmente tiene algunos widgets para la visualizacion de la informacion obtenida a su vez con la base de datos. Para el primer widget se uso programó un reloj con fecha mediate el usod de variables propias de javascript Date() y mediante a una iteracion se actuliza la fecha y la hora por cada intervalo de tiempo. Adicionalmente se programo un indicador de alamrma basado en la ultima lectura de la base de datos y algunos criterios que se especificaran posteriormente. Este widget cambiara su color y su texto dependiendo del dato almacenado en por el analisis de la inteligencia artificial.
+
+ ![Screenshot from 2021-09-02 09-44-24](https://user-images.githubusercontent.com/55359032/131864814-60d85911-37fd-4eb9-9a98-00abbdd86d8e.png)
+        
+        
 
 ## Bibliografia
 Recursos adicionales

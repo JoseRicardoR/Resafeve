@@ -9,7 +9,7 @@ COPY requirements.txt ./
 #RUN ["/bin/sh ", "-c", "pip install --no-cache-dir -r requirements.txt"]
 #RUN apt update
 RUN pip install --no-cache-dir -r requirements.txt
-RUN mkdir samples
+#RUN apt update -y && apt install -y avahi-daemon
 
 COPY . .
 
