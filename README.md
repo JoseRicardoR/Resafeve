@@ -18,10 +18,10 @@ El proceso planteado es el siguiente:
 * Procesar con la IA el archivo de audio y obtener resultados.
 * Finalmente mostrar los resultados en una pagina web para la toma de decisiones.
 
-En cuanto a este repositorio, el archivo README es una documentación extensa y detallada de lo desarrollado, y se encuentran cuatro carpetas con las partes del proyecto. La carpeta de DockerServices contiene todas las aplicaciones de Docker además de las herramientas necesarias, la carpeta ESP32 contiene todos los archivos relacionados con el microcontrolador, la carpeta Front_end la infromación relacionada a la pagina web y la carpeta Prototipo la información relacionada con el producto fisico en cuestion.
+En cuanto a este repositorio, el archivo README es una documentación extensa y detallada de lo desarrollado, y se encuentran cuatro carpetas con las partes del proyecto. La carpeta de "DockerServices" contiene todas las aplicaciones de Docker además de las herramientas necesarias, la carpeta "ESP32" contiene todos los archivos relacionados con el microcontrolador, la carpeta "Front_end" la infromación relacionada a la pagina web y la carpeta "Prototipo" la información relacionada con el producto fisico en cuestion.
 
 ## Funcionalidad de la ESP32
-En la carpeta del SistemasEmbebidos/ESP32/EjemplosGuia/ se encuentran los siguientes archivos que sirven como base para realizar pruebas sencillas y entender el manejo de las herramientas usadas:
+En la carpeta del "SistemasEmbebidos/ESP32/EjemplosGuia/" se encuentran los siguientes archivos que sirven como base para realizar pruebas sencillas y entender el manejo de las herramientas usadas:
 * freeRTOS.ino, que es un codigo desarrollado en arduino para la ESP32 en el que se ejemplifica el uso del FreeRTOS con multiples tareas.
 * esp32_Multitasking.ino, que es otro ejemplo del uso de FreeRTOS pero aprovechando los dos cores del ESP32.
 * mqtt_ESP32.ino, es un ejemplo de uso de MQTT en el ESP32 para muestrar datos, publicarlos, y recibir información. Como servidor de prueba se usa test.mosquitto.org, que es gratuito y disponible en internet para todo publico.
@@ -109,7 +109,12 @@ El archivo definitivo tiene el nombre de ESP32_audio_receiver.py, y la explicaci
 
 En cuanto al componente FreeRTOS del proyecto, como se utiliza solo una función para todo el proceso en el ESP32, se procedio a hacer una tarea que contuviese todos estos elementos. En el archivo ESP32_I2S_Sampling.ino se ve como la tarea i2s_adc es instanciada como una task de FreeRTOS y este se reincia una vez cumple su ciclo. En una implementación donde se quisiese muestrear con dos microfonos al tiempo se podria crear una segunda tarea i2s_adc_2 con la misma funcionalidad. 
 
+### Alimentación
+Se analizaron dos alternativas para la alimentación de la ESP32 cuando se probase en campo. La primera y más sencilla es la alimentación de la tareta por medio de una pila de litio CR123 de 3.3V. En este caso se pudo realizar la prueba más parece para la aplicación dada se requiere una mayor potencia pues no fue suficiente para encender el montaje. Luego la segunda opción y mejor elaborada es el uso de paneles solares que carguen una pila de litio. Así será realmente independiente el diseño de estar conectado a una red electrica o de el recambio de baterias. El montaje es como se muestra a continuación y como documenta el proceso en https://randomnerdtutorials.com/power-esp32-esp8266-solar-panels-battery-level-monitoring/.
 
+![Alimentación ESP32 con paneles solares](https://i2.wp.com/randomnerdtutorials.com/wp-content/uploads/2019/05/esp8266-solar-powered-f.png?resize=1024%2C505&quality=100&strip=all&ssl=1)
+
+En la carpeta "Prototipo" se muestran imagenes de la PCB con todos los componentes mencionados, así como un imagen 3D de como se vería el montaje completo.
 
 ## Funcionalidad de la FPGA
 
