@@ -1,7 +1,10 @@
 # Resafeve
-Proyecto final de Sistemas embebidos: Resafeve
+Proyecto final de Sistemas embebidos
 
-Mateo Bernal Bonil - Valentine Chimezie Muodum Prieto - Esteban Ladino Fajardo - Jose Ricardo Rincón Peláez
+**Toda la información de este proyecto se encuentra en el respoitrio de github: https://github.com/esteban11519/SistemasEmbebidos**
+
+Integrantes del grupo:
+*Mateo Bernal Bonil - Valentine Chimezie Muodum Prieto - Esteban Ladino Fajardo - Jose Ricardo Rincón Peláez*
 
 
 Se quiere hacer un sistema de monitoreo en reservas naturales para reservas naturales, en el cual se instalan microfonos en arboles para el regustro de audio y su procesamiento con IA en un servidor aparte. Los micrfonos se controlan con ESP32, la comunicación se plantea por medio de MQTT al servidor Mosquitto situado en una Raspberry, conectada tambien a un servidor online.
