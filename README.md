@@ -578,12 +578,13 @@ Esta información se almacena en un archivo y se envía a la base de datos por m
 
 La ip del servidor que contenga la IA se debe modificar en el archivo app.py y luego ejecutar el archivo docker-compose para la arquitectura arm.
 
-### FRONT END
-Para el front end(Interfaz hombre maquina) se realizo una pagina web que hace uso de lenguaje HTML, JAVASCRIPT, NODE.js, CSS y PYTHON para su funcionamiento como diseño. Particularmente NODE.js y PYTHON se uso para parte del backend que principalmente es la lectura de la base de datos INFLUXDB. Para hacer una descripcion de cada partede la pagina clara y consisa dividio la pagina en "Encabezado" y "Main".
+## FRONT END
+
+Para el front end (Interfaz Hombre Maquina) se realizó una página web que hace uso de lenguaje HTML, JAVASCRIPT, NODE.js, CSS y PYTHON para su funcionamiento como diseño. Particularmente NODE.js y PYTHON se uso para parte del backend que principalmente es la lectura de la base de datos InfluxDB. Para hacer una descripción de cada parte de la página clara y concisa se dividió la página en "Encabezado" y "Main".
 
 ### ENCABEZADO
-Para el encabezado se siguio la siguiente maqueta de HTML.
-```bash
+Para el encabezado se siguió la siguiente maqueta de HTML.
+```html
 nav class="navbar">
         <div class="navbar_container">
             <a href="/" class="" id="navbar_logo"><i class="fab fa-pagelines"></i>Resafeve</a>
@@ -604,16 +605,15 @@ nav class="navbar">
     </nav>
 ```
 
-En el anterior codigo vemos varios elementos <a> que hacen referencia a los "Links" a otras paginas. Para este caso tenemos los siguientes botones. 
+En el anterior código vemos varios elementos \<a> que hacen referencia a los "Links" a otras páginas. Para este caso tenemos los siguientes botones. 
   
 ![Screenshot from 2021-09-02 09-09-01](https://user-images.githubusercontent.com/55359032/131862028-b4d13deb-9292-4983-9d54-55efb4f82829.png)
         
-Que como vemos en la maqueta de HTML al presionar "Documentacion" nos redirecciona al github del proyecto mientras que al presionar Monitorear nos direcciona a Grafana a un Dashboard. Ademas de estos elementos tenemos el titulos de la pagina que tiene un estilo particular ya que se le agrego un degrade en la hoja de estilos. Ademas para el "icono" se uso un script prestado por la pagina https://fontawesome.com/, donde al registrarse y poner la etiqueta del script que nos dan para nuestra cuenta ya con solo hacer referencia a la clase "fab fa-pagelines" de la imagen esta aparece en el elemento deseado.
+Que como vemos en la maqueta de HTML al presionar "Documentacion" nos redirecciona al GitHub del proyecto mientras que al presionar Monitorear nos direcciona a Grafana a un Dashboard. Además de estos elementos tenemos los títulos de la página que tiene un estilo particular ya que se le agrego un degrade en la hoja de estilos. Además para el "icono" se uso un script prestado por la página https://fontawesome.com/, donde al registrarse y poner la etiqueta del script que nos dan para nuestra cuenta ya con solo hacer referencia a la clase "fab fa-pagelines" de la imagen esta aparece en el elemento deseado.
        
 ![Screenshot from 2021-09-02 09-33-40](https://user-images.githubusercontent.com/55359032/131862928-ac8917b4-a6de-4273-8974-699d427a4d28.png)
  
-```bash    
-        
+```css 
  #navbar_logo {
     background-color: #0a8124;
     background-image: linear-gradient(to bottom, #19e946 0%, #00a524 100%);
@@ -633,19 +633,19 @@ Hay algunos otros elementos y utilidades de CSS que son interensantes, como el H
         
 ### MAIN
         
-Para el main se uso un contenedor que cotiene una imagen con una frase y adicionalmente tiene algunos widgets para la visualizacion de la informacion obtenida a su vez con la base de datos. Para el primer widget se uso programó un reloj con fecha mediate el usod de variables propias de javascript Date() y mediante a una iteracion se actuliza la fecha y la hora por cada intervalo de tiempo. Adicionalmente se programo un indicador de alamrma basado en la ultima lectura de la base de datos y algunos criterios que se especificaran posteriormente. Este widget cambiara su color y su texto dependiendo del dato almacenado en por el analisis de la inteligencia artificial.
+Para el main se uso un contenedor que cotiene una imagen con una frase y adicionalmente tiene algunos widgets para la visualización de la información obtenida a su vez con la base de datos. Para el primer widget se uso programó un reloj con fecha mediate el usod de variables propias de javascript Date() y mediante a una iteración se actuliza la fecha y la hora por cada intérvalo de tiempo. Adicionalmente se programó un indicador de alarma basado en la última lectura de la base de datos y algunos criterios que se especificarán posteriormente. Este widget cambiará su color y su texto dependiendo del dato almacenado por el análisis de la inteligencia artificial.
 
  ![Screenshot from 2021-09-02 09-44-24](https://user-images.githubusercontent.com/55359032/131864814-60d85911-37fd-4eb9-9a98-00abbdd86d8e.png)
         
  Ahora este Widget resume todo el funcionamiento principal del backend. Primero tenemos una aplicacion de Python la cual cuenta con la libreria mas importante para la lectura de datos desde la base de datos influxDB (INFLUXDB). Esta libreria nos permite crear un cliente y  conectarnos a la base de datos, para posteriormente usar la funcion .query para hacer solicitudes tipo "SQL". 
 
-```bash 
+```py 
         client = influxdb.InfluxDBClient(host='192.168.1.86', port=8086, ....)
         Lecturas_2 = client.query(f"SELECT * FROM embebidos WHERE time > now()-14d")
 ```
-De esta manera se crea un archivo json que posteriomente nos permite usar Node.js junto con algunos paquetes como  EXPRESS, CORS y FS. Estas librerias primero como EXPRESS sirven para montar servicios para hacer solicitudes APIS , CORS soluciona un problema de comunicacion entre HTTPS y HTTP. Finalmente FS nos ayuda a leer los json. Finalmente con ayuda de FETCH se hace la solicitud desde la pagina web y mediante el metodo .then() podemos enviar los resultados retornados por FETCH a alguna funcion para de esta manera analizar y modificar el widget en cuestion.
+De esta manera se crea un archivo json que posteriomente nos permite usar Node.js junto con algunos paquetes como  EXPRESS, CORS y FS. Estas librerías primero como EXPRESS sirven para montar servicios para hacer solicitudes APIS , CORS soluciona un problema de comunicación entre HTTPS y HTTP. Además, FS nos ayuda a leer los json. Finalmente con ayuda de FETCH se hace la solicitud desde la pagina web y mediante el metodo .then() podemos enviar los resultados retornados por FETCH a alguna función para de esta manera analizar y modificar el widget en cuestión.
  
-```bash 
+```py 
      fetch('http://localhost:1500')
     .then(response => response.json())
     .then(data => printIt(data));
@@ -662,7 +662,7 @@ Recursos adicionales
 *  Documentacion SPI y Icestudio: https://github.com/Obijuan/Cuadernos-tecnicos-FPGAs-libres/wiki/CT.5:-SPI-esclavo
 
 
-* [Sanches] J. J. Sánchez Hernández, «IoT Dashboard - Sensores, MQTT, Telegraf, InfluxDB y Grafana». may 20, 2021. [En línea]. Disponible en: http://josejuansanchez.org/iot-dashboard/
+* [Sanchez] J. J. Sánchez Hernández, «IoT Dashboard - Sensores, MQTT, Telegraf, InfluxDB y Grafana». may 20, 2021. [En línea]. Disponible en: http://josejuansanchez.org/iot-dashboard/
 
 
 * «Docker Hub». https://hub.docker.com/ (accedido sep. 02, 2021).
