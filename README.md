@@ -145,8 +145,11 @@ Cada muestra de audio es representada por 2 Bytes de datos (16 bits), Sin embarg
 maestro y organizados en un registro propio del modulo). Por tanto se asignara 2 posiciones de memoria (2 registros de 8 bits mapeados en derterminadas direcciones de memoria),
 a una muestra de audio en un instante. Para el envio de esta señal a la FPGA se cuenta con el bloque "SPI-cmd-regs" que se encargara de primero apuntar a la dirección de
 alguno de los registros de la muestra instantanea y luego escribir el dato designado por el maestro, tambien es posible leer este dato en caso de que se requiera hacer alguna comparación (notese que se requerirá hacer dos veces este proceso para llenar totalmente los registros asignados a la muestra). 
+
+### Control por SPI
 ![SPI_Control_Mapeo](https://user-images.githubusercontent.com/42346359/131919736-5fa2e7a1-381f-472d-ac27-f6eae8ded62c.PNG)
 
+### Lectura de muestra
 ![image](https://user-images.githubusercontent.com/42346359/131919916-3c2372d1-f5ba-42b9-a13d-55d4d770a59c.png)
 
 Arriba se puede ver el control de las posiciones de memoria de todos los registros asociados a la FPGA junto al diagrama que hace posible la concatenanción para la creación de
@@ -155,8 +158,57 @@ la muestra instantanea.
 Una vez cargado el valor de la muestra instantanea, el maestro dará la orden de comparar la muestra con el valor de intensidad umbral previamente establecido, en caso tal de
 que la muestra tome un valor mayor al establecido el contador se incrementara, esta orden de comparación tambien incrementara un registro donde se llevara la cuenta de cuantos
 datos han sido comparados y por tanto el total de muestras validas que se han leido hasta el momento.
+
+### Bloque de Comparación
 ![Comparacion](https://user-images.githubusercontent.com/42346359/132081617-d58d14e1-c53d-4f6e-9aa6-231a1e055562.PNG)
+
+### Bloque de Conteo de Muestras
 ![image](https://user-images.githubusercontent.com/42346359/132081692-a7cc7350-5016-40ac-abe9-333786224516.png)
+
+El programa cuenta tambien con una funcion de reseteo universal de registros asignado a una posición de memoria en caso tal de que el maestro por alguna razon quiera abortar o 
+reiniciar el proceso
+
+En algunas imagenes se han mostrados bloques cuya unica funcion es leer constantes asociadas a posiciones de memoria especificas y retornar booleanos que son asignados a una variable de control en funcion a si esta constante coreesponde a la posicion de memoria seleccionada en una anterior transaccion, dichos bloques son los encargados de seleccionar el registro desde donde se seleccionara la información que sera enviada en la proxima transaccion de SPI desde el esclavo al maestro.
+
+### Ejemplo de bloque de lectura de comparacion de identificacion de posicion de memoria
+
+![image](https://user-images.githubusercontent.com/42346359/132082033-e4bbf63d-2b6e-4115-aaa3-2ce6437a9593.png)
+
+Para la lectura de registros se hace uso de un codificador 16-4 junto a un multiplexor 16-1 de 8 bits, la tarea del codificador es cifrar una la posiciones de memoria a la que se apuntó, de manera que este dato cifrado es reconocido como la linea desde la que el multiplexor deberá leer la información asociada a la posicion de memoria y por tanto enviarla por el pin MOSI. En caso de que ningun registro sea seleccionado para lectura, o de que se seleccione uno inexistente, la informacion enviada en la proxima transaccion al SPI será FF.
+
+### Bloque de lectura de registros del esclavo
+![image](https://user-images.githubusercontent.com/42346359/132082216-ceb7f3c0-992e-4deb-9a4e-b71abce0dab0.png)
+
+El mapa de memoria detallado obviando las posiciones asignadas a las instrucciones de apuntado, lectura y escritura se muestra a continuación.
+### Mapa de Memoria del esclavo
+<ul>
+<li> hx01: M16_1  (Byte mas significativo de la muestra) </li>
+<li> hx02: M16_2  (Byte menos significativo de la muestra) </li>
+<li> hx03: Comparacion  (Emite un pulso que luego debera ser bajado a 0,
+este pulso da la orden de comparar la muestra con el umbral y contabilizar) </li>
+<li> hx04: U_Reset  (Resetea los contadores, hace la funcion de reset universal) </li>
+<li> hx05: CriterioAud (Informa si las muestras que se han analizado superan  
+el umbral de audio valido) </li>
+<li> hx06: LCompleta (Informa si ya se ha hecho la lectura de todas las muestras) </li>
+<li> hx07: Ndato1 (Recoge los 8 bits menos significativos de la cantidad total de 
+datos que han sido leidos) </li>
+<li> hx08: Ndato2 (Recoge los segundos 8 bits menos significativos de la cantidad
+total de datos que han sido leidos) </li>
+<li> hx09: Ndato3 (Recoge el bit mas signicado de la cuenta total de datos, este 
+bit sera el menos significativo del arreglo de 8 bits que se envia) </li>
+<li> hx0A: CUmbral1 (Recoge los 8 bits menos significativos de la cantidad total de 
+muestras que han superado el umbral) </li>
+<li> hx0B: CUmbral2 (Recoge los segundos 8 bits menos significativos de la cantidad
+total de muestras que han superado el umbral) </li>
+<li> hx0C: CUmbral3 (Recoge el bit mas significativo de la cantidad total de 
+muestras que han superado el umbral,este bit sera el menos significativo del 
+arreglo de 8 bits que se envia) </li>
+</ul>
+
+El diagrama total de la implementación de las funciones de comunicación (apuntado, lectura y escritura), y del esclavo (comparación, conteo, etc) se muestra a continuación.
+
+### Diagrama de Implemantacion en la FPGA
+![image](https://user-images.githubusercontent.com/42346359/132082346-327695fc-6b7f-4621-bd35-eb6065fcc8e3.png)
 
 
 ## Funcionalidad DockerServicios
