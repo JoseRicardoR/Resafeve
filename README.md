@@ -1,7 +1,7 @@
 # Resafeve
 Proyecto final de Sistemas embebidos
 
-**Toda la información de este proyecto se encuentra en el respoitrio de github: https://github.com/esteban11519/SistemasEmbebidos**
+**Toda la información de este proyecto se encuentra en el repositorio de github: https://github.com/esteban11519/SistemasEmbebidos**
 
 Integrantes del grupo:
 *Mateo Bernal Bonil - Valentine Chimezie Muodum Prieto - Esteban Ladino Fajardo - Jose Ricardo Rincón Peláez*
