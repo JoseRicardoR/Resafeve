@@ -152,6 +152,13 @@ alguno de los registros de la muestra instantanea y luego escribir el dato desig
 Arriba se puede ver el control de las posiciones de memoria de todos los registros asociados a la FPGA junto al diagrama que hace posible la concatenanción para la creación de
 la muestra instantanea.
 
+Una vez cargado el valor de la muestra instantanea, el maestro dará la orden de comparar la muestra con el valor de intensidad umbral previamente establecido, en caso tal de
+que la muestra tome un valor mayor al establecido el contador se incrementara, esta orden de comparación tambien incrementara un registro donde se llevara la cuenta de cuantos
+datos han sido comparados y por tanto el total de muestras validas que se han leido hasta el momento.
+![Comparacion](https://user-images.githubusercontent.com/42346359/132081617-d58d14e1-c53d-4f6e-9aa6-231a1e055562.PNG)
+![image](https://user-images.githubusercontent.com/42346359/132081692-a7cc7350-5016-40ac-abe9-333786224516.png)
+
+
 ## Funcionalidad DockerServicios
 
 Se encuentra implementado para la arquitectura ARMv7 y para AMD hasta antes de la integración total con el ESP32. En general los siquientes comandos se usan para ambas arquitecturas:
