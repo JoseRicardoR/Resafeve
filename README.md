@@ -213,7 +213,7 @@ El diagrama total de la implementación de las funciones de comunicación (apunt
 ### Diagrama de Implemantacion en la FPGA
 ![image](https://user-images.githubusercontent.com/42346359/132082346-327695fc-6b7f-4621-bd35-eb6065fcc8e3.png)
 
-
+Se adjunta a la documentación un archivo .ino haciendo las veces de maestro donde se puede verificar algunas de las funciones implementadas en la FPGA 
 ## Funcionalidad DockerServicios
 
 Se encuentra implementado para la arquitectura ARMv7 y para AMD hasta antes de la integración total con el ESP32. En general los siquientes comandos se usan para ambas arquitecturas:
