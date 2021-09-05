@@ -7,11 +7,11 @@ const HOST = '0.0.0.0';
 
 app.use(cors())
 
-//app.listen(PORT, HOST); Para docker
-app.listen(1500, () => {
+app.listen(PORT, HOST); //Para docker
+/*app.listen(1500, () => {
     console.log(`Server is up and running on 5000 ...`);
 });
-
+*/
 
 app.get("/", (req, res) => {
     let rawdata = fs.readFileSync('ult_lect.json');
