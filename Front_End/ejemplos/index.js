@@ -11,6 +11,7 @@ app.listen(5000, () => {
     console.log(`Server is up and running on 5000 ...`);
 });
 
+
 app.get("/", (req, res) => {
     const client = new Influx.InfluxDB({
         host: '192.186.1.86',
