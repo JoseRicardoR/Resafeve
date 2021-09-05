@@ -1,5 +1,6 @@
 var resp = 1;
 
+//resp = fetch('http://localhost:8082') Para docker
 resp = fetch('http://localhost:1500')
     .then(response => response.json())
     .then(data => printIt(data));

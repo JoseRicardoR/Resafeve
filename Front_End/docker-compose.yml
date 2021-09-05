@@ -1,0 +1,20 @@
+version: '3.1'
+
+services:
+    web:
+        image: nginx:1.21.1
+        restart: always
+        ports: 
+            - 8081:80  
+        volumes:
+            - ./:/usr/share/nginx/html
+    node:
+        build: ./ejemplos
+        restart: always
+        ports: 
+            - 8082:8080 
+        volumes:
+            - ./ejemplos/ult_lect.json:/usr/src/app/ult_lect.json
+
+            
+    
