@@ -34,7 +34,7 @@ let printIt = (data) => {
     elemt_11.textContent = parseFloat(data.predictions_4_probability).toFixed(2);
 
 
-    if ((data.predictions_0_label == "Chainsaw" || data.predictions_0_label == "Engine"||data.predictions_0_label == "Medium engine (mid frequency)" ||data.predictions_0_label == "Vehicle" ||data.predictions_0_label == "Pump (liquid)" ||data.predictions_0_label == "Motorcycle" ||data.predictions_0_label == "Electric toothbrush")&&(data.predictions_0_probability >= 0.1)) {
+    if ((data.predictions_0_label == "Sawing"|| ((data.prediction_0_label == "Wood")&&(data.predictions_0_probability >= 0.25)) || data.predictions_0_label == "Chainsaw" || data.predictions_0_label == "Engine"||data.predictions_0_label == "Medium engine (mid frequency)" ||(data.predictions_0_label == "Vehicle" && data.predictions_0_probability >= 0.6) ||data.predictions_0_label == "Pump (liquid)" ||data.predictions_0_label == "Motorcycle" ||data.predictions_0_label == "Electric toothbrush")&&(data.predictions_0_probability >= 0.1)) {
         elemt = document.getElementById("main_container_1");
         elemt_1 = document.getElementById("kk");
         if (elemt.style.backgroundColor != "red") {
