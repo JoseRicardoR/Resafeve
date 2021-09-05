@@ -1,13 +1,16 @@
 import influxdb
 import json
 from datetime import datetime
-import os
+import time
 
-client = influxdb.InfluxDBClient(host='192.168.1.86', port=8086, username="admin", password="admin",database="embebidos")
+Host='localhost'
+tiempoEspera=0.5
+
+client = influxdb.InfluxDBClient(host=Host, port=8086, username="admin", password="admin",database="embebidos")
 mem = "a";
 
 while True:
-    client = influxdb.InfluxDBClient(host='192.168.1.86', port=8086, username="admin", password="admin",database="embebidos")
+    client = influxdb.InfluxDBClient(host=Host, port=8086, username="admin", password="admin",database="embebidos")
     
     Lecturas_1 = client.query("SELECT * FROM embebidos")
     Lecturas_1 = list(Lecturas_1) 
@@ -36,6 +39,8 @@ while True:
         with open('./ejemplos/ult_lect.json', 'w') as f:
             f.write(app_json)
             f.close()
+    
+    time.sleep(tiempoEspera)
 
 
 

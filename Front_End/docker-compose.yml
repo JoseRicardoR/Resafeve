@@ -8,13 +8,22 @@ services:
             - 8081:80  
         volumes:
             - ./:/usr/share/nginx/html
-    node:
+    ser_node:
         build: ./ejemplos
         restart: always
         ports: 
             - 8082:8080 
         volumes:
-            - ./ejemplos/ult_lect.json:/usr/src/app/ult_lect.json
+            - ./ejemplos/ult_lect.json:/usr/src/app/ult_lect.json   
+    ser_python:
+        build: .
+        restart: always 
+        volumes:
+            - ./ejemplos/ult_lect.json:/usr/src/app/ejemplos/ult_lect.json
+        depends_on:
+            - web
+            - ser_node
+        
 
             
     
