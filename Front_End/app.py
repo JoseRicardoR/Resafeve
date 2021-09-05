@@ -3,8 +3,8 @@ import json
 from datetime import datetime
 import time
 
-Host='localhost'
-tiempoEspera=0.5
+tiempoEspera=1
+Host='192.168.1.86'
 
 client = influxdb.InfluxDBClient(host=Host, port=8086, username="admin", password="admin",database="embebidos")
 mem = "a";
@@ -39,8 +39,7 @@ while True:
         with open('./ejemplos/ult_lect.json', 'w') as f:
             f.write(app_json)
             f.close()
-    
+    print(app_json)
+    print("funciona")
     time.sleep(tiempoEspera)
-
-
 

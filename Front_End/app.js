@@ -26,7 +26,13 @@
 
 
     };
+    var actualizar = function(){
+        location.reload(true);
+    };
+
+    setInterval(actualizar, 10000);
 
     actualizarHora();
     setInterval(actualizarHora, 1000);
+
 }())
