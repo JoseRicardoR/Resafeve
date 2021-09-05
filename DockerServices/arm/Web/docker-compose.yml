@@ -1,0 +1,16 @@
+version: '3.1'
+
+services:
+    web:
+        image: nginx:1.21.1
+        restart: always
+        ports: 
+            - 8081:80  
+        volumes:
+            - ../../../Front_End:/usr/share/nginx/html
+    node:
+        build: ./node
+        restart: always
+        ports: 
+            - 8082:8080 
+    

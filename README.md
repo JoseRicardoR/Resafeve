@@ -1,10 +1,14 @@
 # Resafeve
 Proyecto final de Sistemas Embebidos Universidad Nacional de Colombia
 
-Mateo Bernal Bonil - Valentine Chimezie Muodum Prieto - Esteban Ladino Fajardo - Jose Ricardo Rincón Peláez
+**Toda la información de este proyecto se encuentra en el repositorio de github: https://github.com/esteban11519/SistemasEmbebidos**
+
+Integrantes del grupo:
+*Mateo Bernal Bonil - Valentine Chimezie Muodum Prieto - Esteban Ladino Fajardo - Jose Ricardo Rincón Peláez*
 
 
-Se quiere hacer un sistema de monitoreo en reservas naturales, en el cual se instalan micrófonos en árboles para el registro de audio y su procesamiento con IA en un servidor aparte. Los micrófonos se controlan con ESP32, la comunicación se plantea por medio de MQTT al servidor Mosquitto situado en una Raspberry, conectada también a un servidor online. El esquema es algo similar al que se muestra a continuación cambiándo Node-RED por la ESP32 y el sensor junto con el led por el Servidor con la IA.
+Se quiere hacer un sistema de monitoreo en reservas naturales para reservas naturales, en el cual se instalan microfonos en arboles para el regustro de audio y su procesamiento con IA en un servidor aparte. Los micrfonos se controlan con ESP32, la comunicación se plantea por medio de MQTT al servidor Mosquitto situado en una Raspberry, conectada tambien a un servidor online.
+En el siguiente esquema se ve la logica de funcionamiento, aunque en nuestro caso se hace uso de un servidor Mosquito, y el sensor es un microfono. Además si bien se pueden recibir mensajes con el ESP32 (y además se implemento dicha función) no fue necesario una aplicación que usara ese camino.
 
 ![Esquema general](https://i1.wp.com/randomnerdtutorials.com/wp-content/uploads/2018/05/ESP32-MQTT-bme280.png?w=600&quality=100&strip=all&ssl=1)
 
@@ -18,16 +22,16 @@ El proceso planteado es el siguiente:
 * Guardar los resultados en la en la base de datos InfluxDB.
 * Finalmente mostrar los resultados en una pagina web para la toma de decisiones.
 
+En cuanto a este repositorio, el archivo README es una documentación extensa y detallada de lo desarrollado, y se encuentran cuatro carpetas con las partes del proyecto. La carpeta de "DockerServices" contiene todas las aplicaciones de Docker además de las herramientas necesarias, la carpeta "ESP32" contiene todos los archivos relacionados con el microcontrolador, la carpeta "Front_end" la infromación relacionada a la pagina web y la carpeta "Prototipo" la información relacionada con el producto fisico en cuestion.
 
-Adicionalmente en la carpeta del SistemasEmbebidos/ESP32/EjemplosGuia/ se encuentran los siguientes archivos que sirven como base para realizar pruebas sencillas y entender el manejo de las herramientas usadas:
-
+## Funcionalidad de la ESP32
+En la carpeta del "SistemasEmbebidos/ESP32/EjemplosGuia/" se encuentran los siguientes archivos que sirven como base para realizar pruebas sencillas y entender el manejo de las herramientas usadas:
 * freeRTOS.ino, que es un codigo desarrollado en arduino para la ESP32 en el que se ejemplifica el uso del FreeRTOS con multiples tareas.
 * esp32_Multitasking.ino, que es otro ejemplo del uso de FreeRTOS pero aprovechando los dos cores del ESP32.
 * mqtt_ESP32.ino, es un ejemplo de uso de MQTT en el ESP32 para muestrar datos, publicarlos, y recibir información. Como servidor de prueba se usa test.mosquitto.org, que es gratuito y disponible en internet para todo publico.
 * I2C_Mic.ino, es el codigo de prueba más sencillo posible el microfono INMP441 con la interfaz I2S en el ESP32.
 * python_mqtt_client.py, es un script de python sencillo que recibe y publica mensajes por medio de MQTT. Este fue modificado para que cuando acabara de generar en .wav lo enviara a la inteligencia artificial y publicara los resultados en el tópico cuyo inicio es *Embebidos/* los cuales se guardaban en la base de datos InfluxDB. En última instancia se le cambió el nombre a app.py y se ejecutó en un docker.
 
-## Funcionalidad de la ESP32
 El microcontrolador usado en el proyecto es el ESP32 de referencia Wemos Loolin32. Este dispositivo cuenta con dos cores y la posibilidad de conectarse a internet. 
 
 ![Pin out ESP32](https://http2.mlstatic.com/D_NQ_NP_668961-MCO44328132325_122020-O.jpg)
@@ -37,9 +41,9 @@ Con el desarrollo del proyecto se evidenciaron y señalaron las limitaciones del
 ### PubSubClient
 Para la comunicación se usa el protocolo de MQTT, que en el caso de la ESP32 se conecta con la librería PubSubClient, y para los demás elementos se usa la líbreria de python paho-mqtt. MQTT usa un sistema de subscripciones para la publiación de mensajes a tópicos específicos en el servidor.
 
-Luego, una primera pregunta se plantea ¿Cuántos segundos puede grabar el ESP32?¿De qué tamaño es el Packete que se enviara?
-De acuerdo a la documentación de pubsubclient el paquete máximo que se puede enviar son 256 bytes con la configuración. Es decir, hay un limite en el tamaño de paqute que se puede enviar, más en la propia documentación se explica que con la funcion client.setBufferSize(MQTT_MAX_PACKET_SIZE); 
-Luego la duda es por el lado de que tamaño es limite máximo que podemos tener. La cuestion es que entre más grande el paquete más se depende de la conexión a internet.
+Luego, unas primeras preguntas fueron ¿Cuantos segundos puede grabar el ESP32?¿De que tamaño es el Packete que se enviara?
+De acuerdo a la documentación de pubsubclient el paquete máximo que se puede enviar son 256 bytes con la configuración. Es decir, hay un limite en el tamaño de paqute que se puede enviar, más en la propia documentación se explica que con la funcion client.setBufferSize(MQTT_MAX_PACKET_SIZE); se puede elegir el tamaño máximo del Buffer.
+Luego la duda es por el lado de que tamaño es limite máximo que podemos tener. La cuestion es que entre más grande el paqute más se depende de la conexión a internet.
 
 ### Microfono electret
 En primera instancia se probó para el muestreo de audio el uso de un micrófono electret con una configuración de amplifiación ya usada en otros proyectos. Luego el ESP32 en alguno de sus pines de lectura debería de ser capaz de muestrear la señal a la frecuencia deseada con el uso de un while y un delay. El archivo ESP32_Audio_mqtt_electret.ino en la carpeta del proyecto, se muestra el código en cuestion.
@@ -48,7 +52,7 @@ Cuando se implemento el codigo se encontró con el primer problema, la lectura d
 ¿Por qué no funciona el AnalogRead en el código?
 En cuanto al error de lectura del ESP32 cuando se usa el WiFi y MQTT el problema son que pines se eligen. Tal como indica la documentación y un foro, algunos Pines (como el 13 que se estaba usando) usan registros ADC2 que son los que manejan las funciones de WiFi de forma que si el WiFi esta activado quedan inhabilitados. Los pines que no se pueden usar son:  GPIO0, GPIO2, GPIO4, GPIO12 - GPIO15, GOIO25 - GPIO27. Luego de cambiar a los pines 34 para la lectura esta se hizo posible. 
 
-Con el montaje inicial se desarrolló un script de python que recibe la información enviada del ESP32 y usa multiples librerias. El proceso era:
+Con el montaje inicial se desarrollo un script de python (en la carpeta SistemasEmbebidos/ESP32/Proyecto/python_mqtt_client_packages.py ) que recibia la información enviada del ESP32 y usaba multiples librerias. El proceso era:
 * Se divide la información en el ESP32 en dos bytes por dato. La lectura es de 12 bits escalada a 16 bits. Pero el canal es de solo un byte de ancho. Además la inteligencia artificial pide idealmente un audio de 10s con una frecuencia de muestreo de 44100Hz y una resolución de 16 bits.
 * En python se recibió esta información y con la funcion [numpy.frombuffer](https://numpy.org/doc/stable/reference/generated/numpy.frombuffer.html?highlight=frombuffer#numpy.frombuffer) se llega a la solución ya que retorna un arreglo unidimensional a partir de la señal de entrada 
 * En el archivo python se usa luego la función numpy.concatenate para crear una [variable global](https://es.stackoverflow.com/questions/10768/crear-variables-globales-en-python) con toda la información recibida en todos los paquetes.  
@@ -56,13 +60,18 @@ Con el montaje inicial se desarrolló un script de python que recibe la informac
 
 Este proceso funcionaba pero la calidad del sonido era mala y los tiempos de eran mucho más largos de lo esperado (enviar 9 segundos costaba casi minuto y medio). Una alternativa era usar las funciones beginplubish() y endpublish() de PubSubClient para que el proceso fuese más bien un stream de datos. Más sin embargo, estas dos funciones no enviaban toda la información por algún error desconocido. 
 
-La solución inicial fue bajar la frecuencia de muestreo, de 44100Hz a 8000Hz. Antes de ello se probo en la inteligencia artificial que aún con audios de 8000Hz se obtuvieran resultados decentes. En comparación los resultados se muestran a continuación que son los resultados de la IA:
+La solución inicial fue bajar la frecuencia de muestreo, de 44100Hz a 8000Hz. Antes de ello se probo en la inteligencia artificial que aún con audios de 8000Hz se obtuvieran resultados decentes. En comparación los resultados se muestran a continuación:
+```
 * 44100 Hz: {"status": "ok", "predictions": [{"label_id": "/m/01j4z9", "label": "Chainsaw", "probability": 0.6540094614028931}, {"label_id": "/m/04_sv", "label": "Motorcycle", "probability": 0.1308945119380951}, {"label_id": "/t/dd00066", "label": "Medium engine (mid frequency)", "probability": 0.12884050607681274}, {"label_id": "/m/0_ksk", "label": "Power tool", "probability": 0.11332365870475769}, {"label_id": "/m/07yv9", "label": "Vehicle", "probability": 0.10684427618980408}]}
+```
+```
 * 8000 Hz: {"status": "ok", "predictions": [{"label_id": "/m/01j4z9", "label": "Chainsaw", "probability": 0.4117594063282013}, {"label_id": "/m/04_sv", "label": "Motorcycle", "probability": 0.206061452627182}, {"label_id": "/m/07yv9", "label": "Vehicle", "probability": 0.1337493658065796}, {"label_id": "/m/0_ksk", "label": "Power tool", "probability": 0.1071915328502655}, {"label_id": "/t/dd00066", "label": "Medium engine (mid frequency)", "probability": 0.07981646060943604}]}
+```
 
 Evidentemente con la frecuencia de muestreo mayor son mejores los resultados más con la frecuencia un poco más baja igual funciona.
 Esto soluciono el problema del tiempo que ahora en total solo 16 segundos, es decir 2 segundos de envio por paquetes de 3 segundos. Paquetes mayores a 3 segundos con las condiciones descritas llenan la memoria. En términos generales se espera un tamaño de paquete alrededor de 48000 bytes. 
 Por otro lado el problema de la calidad del audio seguia existiendo. Se probaron entonces mejores etapas de amplifiación como las mostradas en las imagenes.
+
 ![Circuitos de amplificación señal de microfono electret](https://user-images.githubusercontent.com/36318647/131569777-574a6480-3d16-4da9-88e6-5e8b576d438a.PNG)
 
 Pese a esto el montaje mostrado en la siguiente figura no tenia una buena calidad de sonido, además de tener una frecuencia de muestreo baja.
@@ -71,6 +80,7 @@ Montaje con amplificación y micrfono electret.
 <img src="https://user-images.githubusercontent.com/36318647/131569044-76cfa8a4-bb35-49d9-85ca-5633d9144608.jpg" width="350">
 
 En todo caso no se consiguio que la señal de audio fuera mejor, ni añadiendo condensadores de desacople, en su mayoria es ruido como se ve en la siguiente imagen. Por ende el sonido no es legible.
+
 ![Audio Con microfono electret](https://user-images.githubusercontent.com/36318647/131570448-9fa7ce11-8515-4e02-b2bc-db267fbcb3ff.PNG)
 
 Se buscaron entonces alternativas y se encontro una de cambiar el sensor del proyecto.
@@ -80,7 +90,8 @@ Tal parece que la conversión analoga digital del ESP32 consume mucho más CPU d
 
 ![INMP441](https://user-images.githubusercontent.com/36318647/131572006-06363d38-0d76-4d52-8974-ec905b930f80.PNG)
 
-Luego como ya todo está incorporado en este micrófono la labor consiste en configurar el software para su buen funcionamiento. Al inicio se obtuvo un problema visible en la imagen a continuación. 
+Luego como ya todo esta incorporado en este micrfono la labor consiste en configurar el software para su buen funcionamiento. Al incio se obtuvo un problema visible en la imagen a continuación. 
+
 ![Audio con errores](https://user-images.githubusercontent.com/36318647/131572463-9cfbcac7-a6b4-4371-929d-dd87cb254780.PNG)
 
 El error consiste en que a veces el audio enviado no se graba correctamente, las muestras no se llenan por completo y hay muchos datos en 00. En consecuencia el audio suena entrecortado y “robótico”. Pese a las múltiples pruebas no he descubierto que genera estas inconsistencias, ni el tamaño ni cantidad de dma, ni los pines, ni el APLL-CLK, ni el tamaño de paquete ni audio total. Sencillamente, a veces funciona y a veces no.
@@ -91,21 +102,30 @@ El montaje final es como se muestra a continuación. Muy sencillo.
 
 <img src="https://user-images.githubusercontent.com/36318647/131571799-88136bbe-3e79-4f17-9165-17f1c73cafd3.jpg" width="500">
 
-El codigo completo se encuentra en la carpeta del proyecto con el nombre I2S_Sampling.ino.
+El codigo completo se encuentra en la carpeta del proyecto con el nombre ESP32_I2S_Sampling.ino.
 La señal de audio de salida es en definitiva clara y sin interrupciones. Se puede además muestrear a mayores frecuencias, se elige la de 16000Hz para no saturar de datos la red y la memoria del ESP32.
+
 <img src="https://user-images.githubusercontent.com/36318647/131574616-8b3a6e98-f21a-474e-bff3-a4ae040e81f5.PNG" width="800">
 
 También se cambió el script de python para que ahora solo se requiera la libreria de Pahoo, así pues lo que se hace es generar un header al inicio del archivo que lo hace legible como .wav. Dicho header varia en relación a la frecuencia de muestreo, el numero de bits de resolución y el largo del archivo .wav.
 
 El archivo definitivo tiene el nombre de ESP32_audio_receiver.py, y la explicación del header se puede encontrar en: http://soundfile.sapp.org/doc/WaveFormat/.
 
-
 ### FreeRTOS
+
+En cuanto al componente FreeRTOS del proyecto, como se utiliza solo una función para todo el proceso en el ESP32, se procedio a hacer una tarea que contuviese todos estos elementos. En el archivo ESP32_I2S_Sampling.ino se ve como la tarea i2s_adc es instanciada como una task de FreeRTOS y este se reincia una vez cumple su ciclo. En una implementación donde se quisiese muestrear con dos microfonos al tiempo se podria crear una segunda tarea i2s_adc_2 con la misma funcionalidad. 
+
+### Alimentación
+Se analizaron dos alternativas para la alimentación de la ESP32 cuando se probase en campo. La primera y más sencilla es la alimentación de la tareta por medio de una pila de litio CR123 de 3.3V. En este caso se pudo realizar la prueba más parece para la aplicación dada se requiere una mayor potencia pues no fue suficiente para encender el montaje. Luego la segunda opción y mejor elaborada es el uso de paneles solares que carguen una pila de litio. Así será realmente independiente el diseño de estar conectado a una red electrica o de el recambio de baterias. El montaje es como se muestra a continuación y como documenta el proceso en https://randomnerdtutorials.com/power-esp32-esp8266-solar-panels-battery-level-monitoring/.
+
+![Alimentación ESP32 con paneles solares](https://i2.wp.com/randomnerdtutorials.com/wp-content/uploads/2019/05/esp8266-solar-powered-f.png?resize=1024%2C505&quality=100&strip=all&ssl=1)
+
+En la carpeta "Prototipo" se muestran imagenes de la PCB con todos los componentes mencionados, así como un imagen 3D de como se vería el montaje completo.
 
 ## Funcionalidad de la FPGA
 
-La tarjeta FPGA usada para este proyecto es la Blackice II. Este dispositivo cuenta con la posibilidad de ser programado mediante un entorno gráfico llamado
-Icestudio mediante bloques que representan los módulos que normalmente se instancian al ser usado un lenguaje de descripción de hardware convencional
+La tarjeta FPGA usada para este proyecto es la Blackice MX. Este dispositivo cuenta con la posibilidad de ser programado mediante un entorno grafico llamado
+Icestudio mediante bloques que representan los modulos que normalmente se insatancian al ser usado un lenguaje de descripción de hardware convencional
 (Verilog o VHDL).
 ![Blackice II](https://user-images.githubusercontent.com/42346359/131914705-aa9a34cd-44ce-4965-8141-9e75d155edac.jpg)
 
@@ -131,13 +151,72 @@ Cada muestra de audio es representada por 2 Bytes de datos (16 bits), Sin embarg
 maestro y organizados en un registro propio del módulo). Por tanto se asignara 2 posiciones de memoria (2 registros de 8 bits mapeados en derterminadas direcciones de memoria),
 a una muestra de audio en un instante. Para el envio de esta señal a la FPGA se cuenta con el bloque "SPI-cmd-regs" que se encargara de primero apuntar a la dirección de
 alguno de los registros de la muestra instantanea y luego escribir el dato designado por el maestro, tambien es posible leer este dato en caso de que se requiera hacer alguna comparación (notese que se requerirá hacer dos veces este proceso para llenar totalmente los registros asignados a la muestra). 
+
+### Control por SPI
 ![SPI_Control_Mapeo](https://user-images.githubusercontent.com/42346359/131919736-5fa2e7a1-381f-472d-ac27-f6eae8ded62c.PNG)
 
+### Lectura de muestra
 ![image](https://user-images.githubusercontent.com/42346359/131919916-3c2372d1-f5ba-42b9-a13d-55d4d770a59c.png)
 
 Arriba se puede ver el control de las posiciones de memoria de todos los registros asociados a la FPGA junto al diagrama que hace posible la concatenanción para la creación de
 la muestra instantanea.
 
+Una vez cargado el valor de la muestra instantanea, el maestro dará la orden de comparar la muestra con el valor de intensidad umbral previamente establecido, en caso tal de
+que la muestra tome un valor mayor al establecido el contador se incrementara, esta orden de comparación tambien incrementara un registro donde se llevara la cuenta de cuantos
+datos han sido comparados y por tanto el total de muestras validas que se han leido hasta el momento.
+
+### Bloque de Comparación
+![Comparacion](https://user-images.githubusercontent.com/42346359/132081617-d58d14e1-c53d-4f6e-9aa6-231a1e055562.PNG)
+
+### Bloque de Conteo de Muestras
+![image](https://user-images.githubusercontent.com/42346359/132081692-a7cc7350-5016-40ac-abe9-333786224516.png)
+
+El programa cuenta tambien con una funcion de reseteo universal de registros asignado a una posición de memoria en caso tal de que el maestro por alguna razon quiera abortar o 
+reiniciar el proceso
+
+En algunas imagenes se han mostrados bloques cuya unica funcion es leer constantes asociadas a posiciones de memoria especificas y retornar booleanos que son asignados a una variable de control en funcion a si esta constante coreesponde a la posicion de memoria seleccionada en una anterior transaccion, dichos bloques son los encargados de seleccionar el registro desde donde se seleccionara la información que sera enviada en la proxima transaccion de SPI desde el esclavo al maestro.
+
+### Ejemplo de bloque de lectura de comparacion de identificacion de posicion de memoria
+
+![image](https://user-images.githubusercontent.com/42346359/132082033-e4bbf63d-2b6e-4115-aaa3-2ce6437a9593.png)
+
+Para la lectura de registros se hace uso de un codificador 16-4 junto a un multiplexor 16-1 de 8 bits, la tarea del codificador es cifrar una la posiciones de memoria a la que se apuntó, de manera que este dato cifrado es reconocido como la linea desde la que el multiplexor deberá leer la información asociada a la posicion de memoria y por tanto enviarla por el pin MOSI. En caso de que ningun registro sea seleccionado para lectura, o de que se seleccione uno inexistente, la informacion enviada en la proxima transaccion al SPI será FF.
+
+### Bloque de lectura de registros del esclavo
+![image](https://user-images.githubusercontent.com/42346359/132082216-ceb7f3c0-992e-4deb-9a4e-b71abce0dab0.png)
+
+El mapa de memoria detallado obviando las posiciones asignadas a las instrucciones de apuntado, lectura y escritura se muestra a continuación.
+### Mapa de Memoria del esclavo
+<ul>
+<li> hx01: M16_1  (Byte mas significativo de la muestra) </li>
+<li> hx02: M16_2  (Byte menos significativo de la muestra) </li>
+<li> hx03: Comparacion  (Emite un pulso que luego debera ser bajado a 0,
+este pulso da la orden de comparar la muestra con el umbral y contabilizar) </li>
+<li> hx04: U_Reset  (Resetea los contadores, hace la funcion de reset universal) </li>
+<li> hx05: CriterioAud (Informa si las muestras que se han analizado superan  
+el umbral de audio valido) </li>
+<li> hx06: LCompleta (Informa si ya se ha hecho la lectura de todas las muestras) </li>
+<li> hx07: Ndato1 (Recoge los 8 bits menos significativos de la cantidad total de 
+datos que han sido leidos) </li>
+<li> hx08: Ndato2 (Recoge los segundos 8 bits menos significativos de la cantidad
+total de datos que han sido leidos) </li>
+<li> hx09: Ndato3 (Recoge el bit mas signicado de la cuenta total de datos, este 
+bit sera el menos significativo del arreglo de 8 bits que se envia) </li>
+<li> hx0A: CUmbral1 (Recoge los 8 bits menos significativos de la cantidad total de 
+muestras que han superado el umbral) </li>
+<li> hx0B: CUmbral2 (Recoge los segundos 8 bits menos significativos de la cantidad
+total de muestras que han superado el umbral) </li>
+<li> hx0C: CUmbral3 (Recoge el bit mas significativo de la cantidad total de 
+muestras que han superado el umbral,este bit sera el menos significativo del 
+arreglo de 8 bits que se envia) </li>
+</ul>
+
+El diagrama total de la implementación de las funciones de comunicación (apuntado, lectura y escritura), y del esclavo (comparación, conteo, etc) se muestra a continuación.
+
+### Diagrama de Implemantacion en la FPGA
+![image](https://user-images.githubusercontent.com/42346359/132082346-327695fc-6b7f-4621-bd35-eb6065fcc8e3.png)
+
+Se adjunta a la documentación un archivo .ino haciendo las veces de maestro donde se puede verificar algunas de las funciones implementadas en la FPGA 
 ## Funcionalidad DockerServicios
 
 Se encuentra implementado para la arquitectura ARMv7 y para AMD hasta antes de la integración total con el ESP32. En general los siquientes comandos se usan para ambas arquitecturas:
