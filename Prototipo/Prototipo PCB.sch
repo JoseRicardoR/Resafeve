@@ -1,0 +1,275 @@
+EESchema Schematic File Version 4
+EELAYER 30 0
+EELAYER END
+$Descr A4 11693 8268
+encoding utf-8
+Sheet 1 1
+Title ""
+Date ""
+Rev ""
+Comp ""
+Comment1 ""
+Comment2 ""
+Comment3 ""
+Comment4 ""
+$EndDescr
+$Comp
+L ESP32-DEVKITC-32D:ESP32-DEVKITC-32D U5
+U 1 1 6130D9D7
+P 9300 3600
+F 0 "U5" H 9300 4767 50  0000 C CNN
+F 1 "ESP32-DEVKITC-32D" H 9300 4676 50  0000 C CNN
+F 2 "ESP32-DEVKITC-32D:MODULE_ESP32-DEVKITC-32D" H 9300 3600 50  0001 L BNN
+F 3 "" H 9300 3600 50  0001 L BNN
+F 4 "Espressif Systems" H 9300 3600 50  0001 L BNN "MANUFACTURER"
+F 5 "4" H 9300 3600 50  0001 L BNN "PARTREV"
+	1    9300 3600
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:Battery BT1
+U 1 1 6130E836
+P 5100 2850
+F 0 "BT1" H 5208 2896 50  0000 L CNN
+F 1 "3.7V" H 5208 2805 50  0000 L CNN
+F 2 "Battery:BatteryHolder_MPD_BH-18650-PC2" V 5100 2910 50  0001 C CNN
+F 3 "~" V 5100 2910 50  0001 C CNN
+	1    5100 2850
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:CP1 C5
+U 1 1 613109AA
+P 6900 2250
+F 0 "C5" H 7015 2296 50  0000 L CNN
+F 1 "100nF" H 7015 2205 50  0000 L CNN
+F 2 "Capacitor_Tantalum_SMD:CP_EIA-1608-08_AVX-J" H 6900 2250 50  0001 C CNN
+F 3 "~" H 6900 2250 50  0001 C CNN
+	1    6900 2250
+	0    1    1    0   
+$EndComp
+$Comp
+L Device:Solar_Cell SC1
+U 1 1 61311F66
+P 1450 3300
+F 0 "SC1" H 1558 3396 50  0000 L CNN
+F 1 "Solar_Cell" H 1558 3305 50  0000 L CNN
+F 2 "TerminalBlock:TerminalBlock_Altech_AK300-2_P5.00mm" V 1450 3360 50  0001 C CNN
+F 3 "~" V 1450 3360 50  0001 C CNN
+	1    1450 3300
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:Solar_Cell SC2
+U 1 1 61312E0A
+P 2100 3300
+F 0 "SC2" H 2208 3396 50  0000 L CNN
+F 1 "Solar_Cell" H 2208 3305 50  0000 L CNN
+F 2 "TerminalBlock:TerminalBlock_Altech_AK300-2_P5.00mm" V 2100 3360 50  0001 C CNN
+F 3 "~" V 2100 3360 50  0001 C CNN
+	1    2100 3300
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	2100 3100 2100 2650
+Wire Wire Line
+	1450 3100 1450 2650
+Connection ~ 2100 2650
+Wire Wire Line
+	2100 3400 2100 3650
+Wire Wire Line
+	2100 3650 2750 3650
+Wire Wire Line
+	2750 3650 2750 2950
+Wire Wire Line
+	1450 3400 1450 3650
+Wire Wire Line
+	1450 3650 2100 3650
+Connection ~ 2100 3650
+Wire Wire Line
+	4850 2700 4850 2600
+Wire Wire Line
+	4850 2600 5100 2600
+Wire Wire Line
+	5100 2600 5100 2650
+Wire Wire Line
+	5600 2550 5600 2800
+Wire Wire Line
+	5600 2800 5900 2800
+Wire Wire Line
+	6750 2700 6750 2800
+Wire Wire Line
+	6750 2800 6500 2800
+Wire Wire Line
+	6750 2250 6600 2250
+Wire Wire Line
+	6600 2250 6600 1800
+Wire Wire Line
+	6600 1800 6750 1800
+Connection ~ 6600 2250
+Wire Wire Line
+	8500 2700 7800 2700
+Wire Wire Line
+	7050 2250 7250 2250
+Wire Wire Line
+	7250 2250 7250 2700
+Connection ~ 7250 2700
+Wire Wire Line
+	7250 2700 6750 2700
+Wire Wire Line
+	7250 1800 7250 2250
+Connection ~ 7250 2250
+Wire Wire Line
+	7050 1800 7250 1800
+Wire Wire Line
+	7700 3950 7800 3950
+Connection ~ 7800 2700
+Wire Wire Line
+	7800 2700 7250 2700
+Wire Wire Line
+	7700 4150 8000 4150
+Wire Wire Line
+	8000 4150 8000 3300
+Wire Wire Line
+	8000 3300 8500 3300
+Wire Wire Line
+	7700 4250 8100 4250
+Wire Wire Line
+	8100 4250 8100 3400
+Wire Wire Line
+	8100 3400 8500 3400
+Wire Wire Line
+	7700 4350 8200 4350
+Wire Wire Line
+	8200 4350 8200 3500
+Wire Wire Line
+	8200 3500 8500 3500
+$Comp
+L Device:CP1 C4
+U 1 1 61311814
+P 6900 1800
+F 0 "C4" H 7015 1846 50  0000 L CNN
+F 1 "100uF" H 7015 1755 50  0000 L CNN
+F 2 "Capacitor_THT:CP_Radial_D4.0mm_P1.50mm" H 6900 1800 50  0001 C CNN
+F 3 "~" H 6900 1800 50  0001 C CNN
+	1    6900 1800
+	0    1    1    0   
+$EndComp
+$Comp
+L Regulator_Linear:MCP1700-3302E_SOT23 U4
+U 1 1 61314291
+P 6200 2800
+F 0 "U4" H 6200 3042 50  0000 C CNN
+F 1 "MCP1700-3302E_SOT23" H 6200 2951 50  0000 C CNN
+F 2 "Package_TO_SOT_SMD:SOT-23" H 6200 3025 50  0001 C CNN
+F 3 "http://ww1.microchip.com/downloads/en/DeviceDoc/20001826D.pdf" H 6200 2800 50  0001 C CNN
+	1    6200 2800
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	6200 3100 6200 3200
+Wire Wire Line
+	6200 3200 6600 3200
+Wire Wire Line
+	6600 2250 6600 3200
+Wire Wire Line
+	4800 3000 4800 3200
+Connection ~ 6200 3200
+Wire Wire Line
+	4800 3200 6200 3200
+Wire Wire Line
+	3950 2850 4900 2850
+Wire Wire Line
+	4900 2850 4900 3150
+Wire Wire Line
+	5100 3150 5100 3050
+$Comp
+L INMP441ACEZ-R7:INMP441ACEZ-R7 MK1
+U 1 1 6130FB8C
+P 7000 4250
+F 0 "MK1" H 7000 4817 50  0000 C CNN
+F 1 "INMP441ACEZ-R7" H 7000 4726 50  0000 C CNN
+F 2 "INMP441ACEZ-R7:MIC_INMP441ACEZ-R7" H 7000 4250 50  0001 L BNN
+F 3 "" H 7000 4250 50  0001 L BNN
+F 4 "1.05 mm" H 7000 4250 50  0001 L BNN "MAXIMUM_PACKAGE_HEIGHT"
+F 5 "1.1" H 7000 4250 50  0001 L BNN "PARTREV"
+F 6 "TDK InvenSense" H 7000 4250 50  0001 L BNN "MANUFACTURER"
+F 7 "Manufacturer Recommendations" H 7000 4250 50  0001 L BNN "STANDARD"
+	1    7000 4250
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	4900 3150 5100 3150
+$Comp
+L Connector_Generic:Conn_01x01 J1
+U 1 1 6135E8D3
+P 3000 2650
+F 0 "J1" H 3080 2692 50  0000 L CNN
+F 1 "Conn_01x01" H 3080 2601 50  0000 L CNN
+F 2 "Connector_Pin:Pin_D1.0mm_L10.0mm" H 3000 2650 50  0001 C CNN
+F 3 "~" H 3000 2650 50  0001 C CNN
+	1    3000 2650
+	1    0    0    -1  
+$EndComp
+$Comp
+L Connector_Generic:Conn_01x01 J2
+U 1 1 6135F017
+P 3000 2950
+F 0 "J2" H 3080 2992 50  0000 L CNN
+F 1 "Conn_01x01" H 3080 2901 50  0000 L CNN
+F 2 "Connector_Pin:Pin_D1.0mm_L10.0mm" H 3000 2950 50  0001 C CNN
+F 3 "~" H 3000 2950 50  0001 C CNN
+	1    3000 2950
+	1    0    0    -1  
+$EndComp
+$Comp
+L Connector_Generic:Conn_01x04 J3
+U 1 1 6135F814
+P 3650 2750
+F 0 "J3" H 3568 2325 50  0000 C CNN
+F 1 "Conn_01x04" H 3568 2416 50  0000 C CNN
+F 2 "Connector_PinHeader_1.00mm:PinHeader_1x04_P1.00mm_Vertical" H 3650 2750 50  0001 C CNN
+F 3 "~" H 3650 2750 50  0001 C CNN
+	1    3650 2750
+	-1   0    0    1   
+$EndComp
+Wire Wire Line
+	3850 2850 3850 3000
+Wire Wire Line
+	3850 3000 4800 3000
+Wire Wire Line
+	3950 2850 3950 2750
+Wire Wire Line
+	3950 2750 3850 2750
+Wire Wire Line
+	3850 2700 3850 2650
+Wire Wire Line
+	3850 2700 4850 2700
+Wire Wire Line
+	3850 2550 5600 2550
+Wire Wire Line
+	7700 4550 8000 4550
+Wire Wire Line
+	8300 4550 8300 4000
+Wire Wire Line
+	8300 4000 8500 4000
+Wire Wire Line
+	6300 4350 6200 4350
+Wire Wire Line
+	6200 4350 6200 4750
+Wire Wire Line
+	6200 4750 8000 4750
+Wire Wire Line
+	8000 4750 8000 4550
+Connection ~ 8000 4550
+Wire Wire Line
+	8000 4550 8300 4550
+Wire Wire Line
+	7800 2700 7800 3950
+Wire Wire Line
+	2750 2950 2800 2950
+Wire Wire Line
+	2100 2650 2800 2650
+Wire Wire Line
+	1450 2650 2100 2650
+$EndSCHEMATC
